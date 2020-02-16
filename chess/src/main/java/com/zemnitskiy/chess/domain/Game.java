@@ -29,15 +29,16 @@ public class Game {
                 return false;
             }
         }
+        if(! (board.getFigures()[position1.getVertical()][position1.getIntHorizontal()].getColor() == Color.BLACK ^ isWhiteNow)){
+            log.info("Now is not your turn");
+            return false;
+        }
         if (!board.getFigures()[position1.getVertical()][position1.getIntHorizontal()]
                 .isPossible(position1,position2, board.getFigures())){
             log.debug("Turn is impossible.");
             return false;
         }
-        if(! (board.getFigures()[position1.getVertical()][position1.getIntHorizontal()].getColor() == Color.BLACK ^ isWhiteNow)){
-            log.info("Now is not your turn");
-            return false;
-        }
+
         log.debug("Turn is Possible");
         isWhiteNow = !isWhiteNow;
         Figure figureBuff = board.getFigures()[position1.getVertical()][position1.getIntHorizontal()];

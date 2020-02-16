@@ -1,12 +1,14 @@
 package com.zemnitskiy.chess;
 import com.zemnitskiy.chess.domain.Board;
 import com.zemnitskiy.chess.domain.Game;
+import com.zemnitskiy.chess.domain.Turn;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
-
+@Slf4j
 @RestController
 public class ChessController {
 
@@ -21,7 +23,7 @@ public class ChessController {
         return board.draw();
     }
     @GetMapping("/turn")
-    public String  makeTurn(@RequestParam(value = "turn", required = true, defaultValue = "")
+    public String  makeTurn2(@RequestParam(value = "turn", required = true, defaultValue = "")
                              String turn) {
         System.out.println(turn);
         System.out.println(turn.substring(0,turn.indexOf(" ")+1) +""+turn.substring(turn.indexOf(" ")+1));
@@ -30,9 +32,13 @@ public class ChessController {
         }
         return "You make tour turn";
     }
- /*  @PostMapping("/turn")
-    public void makeTurn2(@RequestBody String str){
-       System.out.println(str);
-   }*/
+
+    @PostMapping("/turn")
+    public void makeTurn(@RequestBody String turn){
+        log.info("Turn - " +turn.substring(0,turn.indexOf(" ")+1) +""+turn.substring(turn.indexOf(" ")+1));
+        if (!application.makeTurn(turn.substring(0,turn.indexOf(" ")+1), turn.substring(turn.indexOf(" ")+1))){
+            throw new WebServerException("WrongTurn", new IllegalStateException());
+        }
+   }
 
 }

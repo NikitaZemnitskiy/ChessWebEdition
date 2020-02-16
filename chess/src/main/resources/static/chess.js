@@ -28,10 +28,18 @@ function start() {
  async function moveFigure(frCord, toCord) {
 
      console.log('move from ' + parseCoord(frCord) + ' to ' +parseCoord(toCord));
-     let response = await fetch("http://localhost:8080/turn?turn=" +parseCoord(frCord) + " " + parseCoord(toCord));
+     let response = await fetch("/turn", {method:'POST', body: parseCoord(frCord) + " " + parseCoord(toCord)});
+     if(response.ok) {
+         figure = map[frCord];
+         showFigureAt(frCord, '1');
+         showFigureAt(toCord, figure);
+         soundTurn("chessTurn.mp3");
+         return;
+     }
      figure = map[frCord];
-     showFigureAt(frCord, '1');
-     showFigureAt(toCord, figure);
+     showFigureAt(frCord, figure);
+     soundTurn("WrongTurn.mp3");
+
  }
 
  function addSquares(){
@@ -89,6 +97,11 @@ function start() {
          case 8:return "h"+vert;
          default:return "WrongSquare";
      }
+ }
+ function soundTurn(audioName) {
+     var audio = new Audio();
+     audio.src = audioName;
+     audio.autoplay = true;
  }
  function isBlackSquareAt(coord){
     return (coord % 8 + Math.floor(coord/8))%2;
