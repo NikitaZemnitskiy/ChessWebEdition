@@ -24,8 +24,8 @@ public class Queen extends Figure{
     @Override
     public String toString() {
         if(super.getColor() == Color.WHITE) {
-            return "q";
+            return "Q";
         }
-        return "Q";
+        return "q";
     }
 }

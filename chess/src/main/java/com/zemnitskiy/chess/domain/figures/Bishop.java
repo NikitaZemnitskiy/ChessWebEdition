@@ -62,8 +62,8 @@ public class Bishop extends Figure{
     @Override
     public String toString() {
         if(super.getColor() == Color.WHITE) {
-            return "b";
+            return "B";
         }
-        return "B";
+        return "b";
     }
 }

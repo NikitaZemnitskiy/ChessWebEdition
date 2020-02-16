@@ -25,8 +25,10 @@ function start() {
        }
      })
  }
- function moveFigure(frCord, toCord) {
-     console.log('move from' + frCord + ' to ' + toCord);
+ async function moveFigure(frCord, toCord) {
+
+     console.log('move from ' + parseCoord(frCord) + ' to ' +parseCoord(toCord));
+     let response = await fetch("http://localhost:8080/turn?turn=" +parseCoord(frCord) + " " + parseCoord(toCord));
      figure = map[frCord];
      showFigureAt(frCord, '1');
      showFigureAt(toCord, figure);
@@ -71,6 +73,21 @@ function start() {
          case 'n' : return '&#9822';
          case 'p' : return '&#9823';
          default : return '';
+     }
+ }
+ function parseCoord(coord){
+     let vert = Math.trunc(9-coord/8);
+     let hor = coord % 8 + 1;
+     switch (hor){
+         case 1:return "a"+vert;
+         case 2:return "b"+vert;
+         case 3:return "c"+vert;
+         case 4:return "d"+vert;
+         case 5:return "e"+vert;
+         case 6:return "f"+vert;
+         case 7:return "g"+vert;
+         case 8:return "h"+vert;
+         default:return "WrongSquare";
      }
  }
  function isBlackSquareAt(coord){

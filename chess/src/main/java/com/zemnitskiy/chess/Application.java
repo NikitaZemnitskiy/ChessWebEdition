@@ -19,16 +19,16 @@ public class Application {
 
     @Async
     public void startChess() {
-        log.info("startChess");
         Scanner scanner = new Scanner(System.in);
         Position position1;
         Position position2;
-        while (true) {
+        /*while (true) {
             try {
+                game.getBoard().draw();
                 String lastPosition = scanner.nextLine();
                 position1 = new Position(lastPosition.charAt(0), Integer.parseInt(String.valueOf(lastPosition.charAt(1))));
                 String newPosition = scanner.nextLine();
-               position2 = new Position(newPosition.charAt(0), Integer.parseInt(String.valueOf(newPosition.charAt(1))));
+                position2 = new Position(newPosition.charAt(0), Integer.parseInt(String.valueOf(newPosition.charAt(1))));
             }
             catch (IllegalStateException e){
                 System.out.println("Incorrect input");
@@ -39,7 +39,23 @@ public class Application {
                     continue;
                 }
 
+        }*/
+    }
+    public boolean makeTurn(String lastPosition, String newPosition){
+        try {
+           Position position1 = new Position(lastPosition.charAt(0), Integer.parseInt(String.valueOf(lastPosition.charAt(1))));
+           Position position2 = new Position(newPosition.charAt(0), Integer.parseInt(String.valueOf(newPosition.charAt(1))));
+            if (!game.makeTurn(position1, position2)){
+                System.out.println("Wrong turn");
+                return false;
+            }
         }
+        catch (IllegalStateException e){
+            System.out.println("Incorrect input");
+           return false;
+        }
+        log.info("Turn maked");
+        return true;
     }
 
 }

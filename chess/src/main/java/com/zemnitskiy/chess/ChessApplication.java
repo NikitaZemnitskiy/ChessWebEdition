@@ -35,7 +35,6 @@ public class ChessApplication {
 
 	@PostConstruct
 	void start() {
-		log.info(app.getClass().getName());
 		app.startChess();
 	}
 
