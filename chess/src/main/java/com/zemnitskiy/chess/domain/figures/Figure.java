@@ -16,6 +16,6 @@ public abstract class Figure {
       this.color = color;
    }
 
-   public abstract boolean isPossible(Position position1, Position position2, Figure[][] figures);
+   public abstract void isPossible(Position position1, Position position2, Figure[][] figures);
 
 }

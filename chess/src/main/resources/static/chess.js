@@ -1,6 +1,7 @@
  var divSquare = '<div id= "s$coord" class = "square $color"></div>';
  var divFigure = '<div id= "f$coord" class = "figure">$figure</div>';
  var map;
+ var audio = new Audio();
  $(function(){
 start();
         });
@@ -9,7 +10,8 @@ function start() {
     addSquares();
     fetch('/board')
         .then(response => response.text())
-        .then(figures => showFigures(figures));
+        .then(figures => showFigures(figures))
+        .catch(e=>console.error(e));
 //    showFigures('rnbqkbnrpppppppp11111111111111111111111111111111PPPPPPPPRNBQKBNR');
 }
  function setDraggable() {
@@ -28,18 +30,19 @@ function start() {
  async function moveFigure(frCord, toCord) {
 
      console.log('move from ' + parseCoord(frCord) + ' to ' +parseCoord(toCord));
-     let response = await fetch("/turn", {method:'POST', body: parseCoord(frCord) + " " + parseCoord(toCord)});
+     let response = await fetch("/turn", {method:'POST', body: parseCoord(frCord) + parseCoord(toCord)});
      if(response.ok) {
          figure = map[frCord];
          showFigureAt(frCord, '1');
          showFigureAt(toCord, figure);
          soundTurn("chessTurn.mp3");
-         return;
      }
-     figure = map[frCord];
-     showFigureAt(frCord, figure);
-     soundTurn("WrongTurn.mp3");
-
+     else {
+         console.log(await response.text())
+         figure = map[frCord];
+         showFigureAt(frCord, figure);
+         soundTurn("WrongTurn.mp3");
+     }
  }
 
  function addSquares(){
@@ -66,23 +69,27 @@ function start() {
      map[coord] = figure;
  }
 
- function getChessSymbol(figure){
-     switch (figure) {
-         case 'K' : return '&#9812';
-         case 'Q' : return '&#9813';
-         case 'R' : return '&#9814';
-         case 'B' : return '&#9815';
-         case 'N' : return '&#9816';
-         case 'P' : return '&#9817';
-         case 'k' : return '&#9818';
-         case 'q' : return '&#9819';
-         case 'r' : return '&#9820';
-         case 'b' : return '&#9821';
-         case 'n' : return '&#9822';
-         case 'p' : return '&#9823';
-         default : return '';
-     }
+ const figureMap = {
+     'K' : '&#9812',
+     'Q' : '&#9813',
+     'R': '&#9814',
+     'B': '&#9815',
+     'N': '&#9816',
+     'P': '&#9817',
+     'k': '&#9818',
+     'q': '&#9819',
+     'r': '&#9820',
+     'b': '&#9821',
+     'n': '&#9822',
+     'p': '&#9823',
+     '1':''
  }
+
+
+ function getChessSymbol(figure){
+     return figureMap[figure]
+ }
+
  function parseCoord(coord){
      let vert = Math.trunc(9-coord/8);
      let hor = coord % 8 + 1;
@@ -99,7 +106,6 @@ function start() {
      }
  }
  function soundTurn(audioName) {
-     var audio = new Audio();
      audio.src = audioName;
      audio.autoplay = true;
  }

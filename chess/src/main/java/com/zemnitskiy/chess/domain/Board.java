@@ -13,8 +13,8 @@ public class Board {
     }
 
     Figure[][] figures;
-
-    public String draw(){
+@Override
+    public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = 1; i<9; i++){
             for(int k = 8; k>0; k--){

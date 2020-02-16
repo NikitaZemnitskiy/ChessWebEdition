@@ -2,6 +2,7 @@ package com.zemnitskiy.chess.domain.figures;
 
 import com.zemnitskiy.chess.domain.Color;
 import com.zemnitskiy.chess.domain.Position;
+import com.zemnitskiy.chess.domain.exceptions.WrongTurnException;
 
 public class Pawn extends Figure {
     boolean isTurnFirst = true;
@@ -10,50 +11,50 @@ public class Pawn extends Figure {
     }
 
     @Override
-    public boolean isPossible(Position position1, Position position2, Figure[][] figures) {
+    public void isPossible(Position position1, Position position2, Figure[][] figures) {
         if(super.getColor() == Color.WHITE) {
-          return isWhitePossible(position1, position2, figures);
+          isWhitePossible(position1, position2, figures);
         }
         else {
-            return isBlackPossible(position1, position2, figures);
+           isBlackPossible(position1, position2, figures);
         }
     }
 
-   boolean isWhitePossible(Position position1, Position position2, Figure[][] figures){
+   private void isWhitePossible(Position position1, Position position2, Figure[][] figures){
 
        if (figures[position2.getVertical()][position2.getIntHorizontal()] == null) {
            if (position1.getVertical() + 1 == position2.getVertical()
                    && position1.getHorizontal() == position2.getHorizontal()) {
                isTurnFirst = false;
-               return true;
+               return;
            }
            if (position1.getVertical() + 2 == position2.getVertical()
                    && position1.getHorizontal() == position2.getHorizontal()
                    && isTurnFirst
                    && figures[position1.getVertical() + 1][position1.getIntHorizontal()] == null) {
                isTurnFirst = false;
-               return true;
+              return;
            }
-           return false;
+           throw new WrongTurnException("Pawn can't make this turn (from "+position1+" to "+position2);
        } else if (position1.getVertical() + 1 == position2.getVertical()
                && position1.getHorizontal() == position2.getHorizontal() + 1) {
            isTurnFirst = false;
-           return true;
+           return;
        } else if (position1.getVertical() + 1 == position2.getVertical()
                && position1.getHorizontal() == position2.getHorizontal() - 1) {
            isTurnFirst = false;
-           return true;
+           return;
        }
-       return false;
+       throw new WrongTurnException("Pawn can't make this turn (from "+position1+" to "+position2);
  }
 
- private boolean isBlackPossible(Position position1, Position position2, Figure[][] figures){
+ private void isBlackPossible(Position position1, Position position2, Figure[][] figures){
 
      if (figures[position2.getVertical()][position2.getIntHorizontal()] == null) {
          if (position1.getVertical() - 1 == position2.getVertical()
                  && position1.getHorizontal() == position2.getHorizontal()) {
              isTurnFirst = false;
-             return true;
+             return;
          }
 
          if (position1.getVertical() - 2 == position2.getVertical()
@@ -61,19 +62,19 @@ public class Pawn extends Figure {
                  && isTurnFirst
                  && figures[position1.getVertical() - 1][position1.getIntHorizontal()] == null) {
              isTurnFirst = false;
-             return true;
+             return;
          }
-         return false;
+         throw new WrongTurnException("Pawn can't make this turn (from "+position1+" to "+position2);
      } else if (position1.getVertical() - 1 == position2.getVertical()
              && position1.getHorizontal() == position2.getHorizontal() + 1) {
          isTurnFirst = false;
-         return true;
+         return;
      } else if (position1.getVertical() - 1 == position2.getVertical()
              && position1.getHorizontal() == position2.getHorizontal() - 1) {
          isTurnFirst = false;
-         return true;
+         return;
      }
-     return false;
+     throw new WrongTurnException("Pawn can't make this turn (from "+position1+" to "+position2);
  }
 
     @Override

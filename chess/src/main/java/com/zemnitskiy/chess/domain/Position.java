@@ -1,5 +1,7 @@
 package com.zemnitskiy.chess.domain;
 
+import com.zemnitskiy.chess.domain.exceptions.ImpossiblePositionException;
+
 public class Position {
     private int vertical;
     private char horizontal;
@@ -7,7 +9,7 @@ public class Position {
 
     public Position(char horizontal, int vertical) {
         if(!isCorrect(horizontal,vertical)){
-            throw new IllegalStateException("Incorrect horizontal or vertical");
+            throw new ImpossiblePositionException("Incorrect horizontal or vertical");
         }
         this.horizontal = horizontal;
         this.vertical = vertical;
@@ -15,14 +17,14 @@ public class Position {
 
     public void setVertical(int vertical) {
         if(!isCorrect(vertical)){
-            throw new IllegalStateException("Incorrect vertical");
+            throw new ImpossiblePositionException("Incorrect vertical");
         }
         this.vertical = vertical;
     }
 
     public void setHorizontal(char horizontal) {
         if(!isCorrect(horizontal)){
-            throw new IllegalStateException("Incorrect horizontal");
+            throw new ImpossiblePositionException("Incorrect horizontal");
         }
         this.horizontal = horizontal;
     }
@@ -75,7 +77,7 @@ public class Position {
             case 'g':return 7;
             case 'h':return 8;
         }
-        throw new IllegalStateException("Incorrect horizontal char");
+        throw new ImpossiblePositionException("Incorrect horizontal char");
     }
 
     @Override

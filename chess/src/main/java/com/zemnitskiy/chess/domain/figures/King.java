@@ -2,6 +2,7 @@ package com.zemnitskiy.chess.domain.figures;
 
 import com.zemnitskiy.chess.domain.Color;
 import com.zemnitskiy.chess.domain.Position;
+import com.zemnitskiy.chess.domain.exceptions.WrongTurnException;
 
 
 public class King extends Figure {
@@ -11,34 +12,34 @@ public class King extends Figure {
     }
 
     @Override
-    public boolean isPossible(Position position1, Position position2, Figure[][] figures) {
+    public void isPossible(Position position1, Position position2, Figure[][] figures) {
 
         if (position1.getVertical() == position2.getVertical()+1 && position1.getHorizontal()==position2.getHorizontal()){
-            return true;
+            return;
         }
         if (position1.getVertical() == position2.getVertical()-1 && position1.getHorizontal()==position2.getHorizontal()){
-            return true;
+            return;
         }
         if (position1.getVertical() == position2.getVertical() && position1.getHorizontal()==position2.getHorizontal()+1){
-            return true;
+            return;
         }
         if (position1.getVertical() == position2.getVertical() && position1.getHorizontal()==position2.getHorizontal()-1){
-            return true;
+            return;
         }
         if (position1.getVertical() == position2.getVertical()+1 && position1.getHorizontal()==position2.getHorizontal()+1){
-            return true;
+            return;
         }
         if (position1.getVertical() == position2.getVertical()+1 && position1.getHorizontal()==position2.getHorizontal()-1){
-            return true;
+            return;
         }
         if (position1.getVertical() == position2.getVertical()-1 && position1.getHorizontal()==position2.getHorizontal()+1){
-            return true;
+            return;
         }
         if (position1.getVertical() == position2.getVertical()-1 && position1.getHorizontal()==position2.getHorizontal()-1){
-            return true;
+            return;
         }
 
-        return false;
+        throw new WrongTurnException("King can't make this turn (from "+position1+" to "+position2);
     }
 
     @Override
