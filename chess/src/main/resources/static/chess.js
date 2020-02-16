@@ -5,14 +5,14 @@
  $(function(){
 start();
         });
-function start() {
+async function start() {
     map = new Array(64);
     addSquares();
-    fetch('/board')
-        .then(response => response.text())
-        .then(figures => showFigures(figures))
-        .catch(e=>console.error(e));
-//    showFigures('rnbqkbnrpppppppp11111111111111111111111111111111PPPPPPPPRNBQKBNR');
+        let response = await fetch('/board')
+        let responseText = await response.text();
+        showFigures(responseText);
+
+
 }
  function setDraggable() {
         $('.figure').draggable();
@@ -29,20 +29,21 @@ function start() {
  }
  async function moveFigure(frCord, toCord) {
 
-     console.log('move from ' + parseCoord(frCord) + ' to ' +parseCoord(toCord));
-     let response = await fetch("/turn", {method:'POST', body: parseCoord(frCord) + parseCoord(toCord)});
-     if(response.ok) {
-         figure = map[frCord];
-         showFigureAt(frCord, '1');
-         showFigureAt(toCord, figure);
-         soundTurn("chessTurn.mp3");
-     }
-     else {
-         console.log(await response.text())
-         figure = map[frCord];
-         showFigureAt(frCord, figure);
-         soundTurn("WrongTurn.mp3");
-     }
+    console.log('move from ' + parseCoord(frCord) + ' to ' + parseCoord(toCord));
+    let response = await fetch("/turn", {method: 'POST', body: parseCoord(frCord) + parseCoord(toCord)});
+    if (response.ok) {
+        figure = map[frCord];
+        showFigureAt(frCord, '1');
+        showFigureAt(toCord, figure);
+        soundTurn("chessTurn.mp3");
+    } else {
+        console.log(await response.text());
+        figure = map[frCord];
+        showFigureAt(frCord, figure);
+        soundTurn("WrongTurn.mp3");
+    }
+
+
  }
 
  function addSquares(){
