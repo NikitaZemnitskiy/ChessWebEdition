@@ -2,16 +2,22 @@
  var divFigure = '<div id= "f$coord" class = "figure">$figure</div>';
  var map;
  var audio = new Audio();
+
+ const evtSource = new EventSource("/stream-sse");
+
  $(function(){
 start();
+     evtSource.addEventListener("periodic-board", function(event) {
+         showFigures(event.data);
+     });
         });
 async function start() {
     map = new Array(64);
     addSquares();
         let response = await fetch('/board')
         let responseText = await response.text();
-        showFigures(responseText);
 
+        showFigures(board);
 
 }
  function setDraggable() {
@@ -113,3 +119,4 @@ async function start() {
  function isBlackSquareAt(coord){
     return (coord % 8 + Math.floor(coord/8))%2;
  }
+
