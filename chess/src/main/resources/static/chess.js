@@ -2,22 +2,20 @@
  var divFigure = '<div id= "f$coord" class = "figure">$figure</div>';
  var map;
  var audio = new Audio();
-
  const evtSource = new EventSource("/stream-sse");
-
  $(function(){
-start();
-     evtSource.addEventListener("periodic-board", function(event) {
-         showFigures(event.data);
+    start();
+                evtSource.addEventListener("boardUpdate", function(event) {
+                    showFigures(event.data);
+
      });
         });
 async function start() {
     map = new Array(64);
-    addSquares();
+        addSquares();
         let response = await fetch('/board')
         let responseText = await response.text();
-
-        showFigures(board);
+        showFigures(responseText);
 
 }
  function setDraggable() {
@@ -37,11 +35,13 @@ async function start() {
 
     console.log('move from ' + parseCoord(frCord) + ' to ' + parseCoord(toCord));
     let response = await fetch("/turn", {method: 'POST', body: parseCoord(frCord) + parseCoord(toCord)});
+
     if (response.ok) {
-        figure = map[frCord];
+       /* figure = map[frCord];
         showFigureAt(frCord, '1');
-        showFigureAt(toCord, figure);
+        showFigureAt(toCord, figure);*/
         soundTurn("chessTurn.mp3");
+
     } else {
         console.log(await response.text());
         figure = map[frCord];

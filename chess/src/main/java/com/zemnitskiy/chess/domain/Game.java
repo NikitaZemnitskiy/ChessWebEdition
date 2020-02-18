@@ -6,10 +6,17 @@ import com.zemnitskiy.chess.domain.exceptions.WrongTurnException;
 import com.zemnitskiy.chess.domain.figures.Figure;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.web.bind.annotation.GetMapping;
+import reactor.core.publisher.Flux;
+
+import java.time.Duration;
+import java.util.Observable;
+import java.util.Observer;
 
 @Slf4j
 @Data
-public class Game {
+public class Game extends Observable{
     private Board board;
     private boolean isWhiteNow = true;
 
@@ -38,7 +45,7 @@ public class Game {
         }
         board.getFigures()[position1.getVertical()][position1.getIntHorizontal()]
                 .isPossible(position1,position2, board.getFigures());
-        //    return false;
+
 
 
         log.debug("Turn is Possible");
@@ -46,5 +53,10 @@ public class Game {
         Figure figureBuff = board.getFigures()[position1.getVertical()][position1.getIntHorizontal()];
         board.getFigures()[position1.getVertical()][position1.getIntHorizontal()] = null;
         board.getFigures()[position2.getVertical()][position2.getIntHorizontal()] = figureBuff;
+        setChanged();
+        log.debug("notifyObservers {}", countObservers());
+        notifyObservers(this.board.toString());
+
     }
+
 }
