@@ -56,6 +56,9 @@ public class Game extends Observable {
     public void makeTurn(Turn turn){
         checkTurn(turn);
         board.makeTurn(turn);
+        board.figures[turn.to.x][turn.to.y] = board.figures[turn.from.x][turn.from.y];
+        board.figures[turn.from.x][turn.from.y] = null;
+        log.debug(turn + " maked");
         isWhiteNow = !isWhiteNow;
         setChanged();
         log.debug("notifyObservers {}", countObservers());

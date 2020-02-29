@@ -31,12 +31,9 @@ public class Board {
 
     public void makeTurn(Turn t){
         log.debug("Trying to make turn from {} to {} ",t.from, t.to);
-
-        figures[t.from.x][t.from.y].isPossible(t, this);
         Figure currentFigure = getFigure(t.from);
-        figures[t.to.x][t.to.y] = currentFigure;
-        figures[t.from.x][t.from.y] = null;
-        log.debug(t + " maked");
+        currentFigure.isPossible(t, this);
+
     }
 
 
