@@ -1,7 +1,7 @@
-package com.zemnitskiy.chess.domain;
+package com.zemnitskiy.chess.domain.domain;
 
 
-import com.zemnitskiy.chess.domain.figures.Figure;
+import com.zemnitskiy.chess.domain.domain.figures.Figure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,18 +35,16 @@ public class Board {
         figures[t.from.x][t.from.y].isPossible(t, this);
         Figure currentFigure = getFigure(t.from);
         figures[t.to.x][t.to.y] = currentFigure;
-        figures[t.from.x][t.from.y] = null;
         log.debug(t + " maked");
     }
-
 
 @Override
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder();
         for(int i = 0; i<8; i++){
-            for(int n = 7; n>=0; n--){
-                if(figures[n][i] != null){
-                    stringBuilder.append(figures[n][i]);
+            for(int k = 7; k>=0; k--){
+                if(figures[i][k] != null) {
+                    stringBuilder.append(figures[i][k]);
                 }
                 else {
                     stringBuilder.append(1);

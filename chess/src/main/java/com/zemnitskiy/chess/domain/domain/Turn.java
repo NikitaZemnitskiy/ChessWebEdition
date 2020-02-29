@@ -1,6 +1,6 @@
-package com.zemnitskiy.chess.domain;
+package com.zemnitskiy.chess.domain.domain;
 
-import com.zemnitskiy.chess.domain.figures.Figure;
+import com.zemnitskiy.chess.domain.domain.figures.Figure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

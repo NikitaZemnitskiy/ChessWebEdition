@@ -1,6 +1,6 @@
-package com.zemnitskiy.chess.domain;
+package com.zemnitskiy.chess.domain.domain;
 
-import com.zemnitskiy.chess.domain.exceptions.ImpossiblePositionException;
+import com.zemnitskiy.chess.domain.domain.exceptions.ImpossiblePositionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

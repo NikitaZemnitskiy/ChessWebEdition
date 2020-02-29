@@ -2,6 +2,7 @@ package com.zemnitskiy.chess;
 
 import com.zemnitskiy.chess.domain.Game;
 import com.zemnitskiy.chess.domain.Position;
+import com.zemnitskiy.chess.domain.Turn;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -42,9 +43,9 @@ public class Application {
     }
     public void makeTurn(String lastPosition, String newPosition) {
 
-           Position position1 = new Position(lastPosition.charAt(0), Integer.parseInt(String.valueOf(lastPosition.charAt(1))));
-           Position position2 = new Position(newPosition.charAt(0), Integer.parseInt(String.valueOf(newPosition.charAt(1))));
-           game.makeTurn(position1, position2);
+           Position position1 = Position.fromString(lastPosition);
+           Position position2 = Position.fromString(newPosition);
+           game.makeTurn(new Turn(position1,position2));
     }
 
 }

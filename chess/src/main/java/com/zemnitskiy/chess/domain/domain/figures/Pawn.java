@@ -1,8 +1,8 @@
-package com.zemnitskiy.chess.domain.figures;
+package com.zemnitskiy.chess.domain.domain.figures;
 
-import com.zemnitskiy.chess.domain.Board;
-import com.zemnitskiy.chess.domain.Turn;
-import com.zemnitskiy.chess.domain.exceptions.WrongTurnException;
+import com.zemnitskiy.chess.domain.domain.Board;
+import com.zemnitskiy.chess.domain.domain.Turn;
+import com.zemnitskiy.chess.domain.domain.exceptions.WrongTurnException;
 
 public class Pawn extends Figure {
     private final int direction;

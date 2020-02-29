@@ -1,10 +1,10 @@
-package com.zemnitskiy.chess.domain;
+package com.zemnitskiy.chess.domain.domain;
 
 
-import com.zemnitskiy.chess.domain.exceptions.NotYourTurnException;
-import com.zemnitskiy.chess.domain.exceptions.WrongTurnException;
-import com.zemnitskiy.chess.domain.figures.Color;
-import com.zemnitskiy.chess.domain.figures.Figure;
+import com.zemnitskiy.chess.domain.domain.exceptions.NotYourTurnException;
+import com.zemnitskiy.chess.domain.domain.exceptions.WrongTurnException;
+import com.zemnitskiy.chess.domain.domain.figures.Color;
+import com.zemnitskiy.chess.domain.domain.figures.Figure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,9 +57,6 @@ public class Game extends Observable {
         checkTurn(turn);
         board.makeTurn(turn);
         isWhiteNow = !isWhiteNow;
-        setChanged();
-        log.debug("notifyObservers {}", countObservers());
-        notifyObservers(this.board.toString());
     }
 
     private void checkTurn(Turn turn){
@@ -67,7 +64,7 @@ public class Game extends Observable {
         Figure distFigure = board.getFigure(turn.to);
 
         if (startFigure == null){
-            log.debug("Turn is impossible.{} don't have a figure", turn.from);
+            log.debug("Turn is impossible.Position 1 don't have a figure");
             throw new WrongTurnException("Turn is impossible.Position 1 don't have a figure");
         }
 
@@ -85,9 +82,5 @@ public class Game extends Observable {
             log.debug("Turn is impossible. Position 1 and position 2 have the same color figures");
             throw new WrongTurnException("Turn is impossible. Position 1 and position 2 have the same color figures");
         }
-    }
-
-    public Board getBoard() {
-        return board;
     }
 }
