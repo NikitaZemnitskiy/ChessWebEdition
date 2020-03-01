@@ -1,30 +1,13 @@
-package com.zemnitskiy.chess;
+package com.zemnitskiy.chess.controller;
+import com.zemnitskiy.chess.Application;
 import com.zemnitskiy.chess.domain.Board;
-import com.zemnitskiy.chess.domain.Event;
 import com.zemnitskiy.chess.domain.Game;
-import com.zemnitskiy.chess.domain.Turn;
-import com.zemnitskiy.chess.domain.exceptions.ChessException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.server.WebServerException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import reactor.core.publisher.DirectProcessor;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.FluxProcessor;
-import reactor.core.publisher.FluxSink;
-
-import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.time.Duration;
-import java.time.LocalTime;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.atomic.AtomicLong;
@@ -41,7 +24,7 @@ public class ChessController {
 
     AtomicLong eventCounter = new AtomicLong();
 
-    @GetMapping("/board")
+    @GetMapping("/boardPosition")
     public String boardString () {
         Board board = game.getBoard();
         return board.toString();

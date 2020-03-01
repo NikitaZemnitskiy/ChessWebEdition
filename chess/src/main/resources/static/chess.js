@@ -13,7 +13,7 @@
 async function start() {
     map = new Array(64);
         addSquares();
-        let response = await fetch('/board')
+        let response = await fetch('/boardPosition')
         let responseText = await response.text();
         showFigures(responseText);
 
