@@ -13,15 +13,6 @@ public class User {
 
     boolean enabled = true;
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", enabled=" + enabled +
-                '}';
-    }
 
     public int getId() {
         return id;
@@ -62,6 +53,15 @@ public class User {
         this.username = username;
         this.password = password;
         this.enabled = true;
+    }
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", enabled=" + enabled +
+                '}';
     }
 
 

@@ -1,4 +1,4 @@
-package com.zemnitskiy.chess.security;
+package com.zemnitskiy.chess.controller;
 
 
 import com.zemnitskiy.chess.entity.User;

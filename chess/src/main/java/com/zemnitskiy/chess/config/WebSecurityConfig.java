@@ -1,4 +1,4 @@
-package com.zemnitskiy.chess.security;
+package com.zemnitskiy.chess.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
