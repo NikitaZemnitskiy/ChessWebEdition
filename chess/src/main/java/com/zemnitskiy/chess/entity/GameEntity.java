@@ -1,13 +1,14 @@
 package com.zemnitskiy.chess.entity;
 
+import com.zemnitskiy.chess.GameStatus;
 import com.zemnitskiy.chess.domain.Board;
 import com.zemnitskiy.chess.domain.Game;
-import com.zemnitskiy.chess.domain.boardRep.StandartBoard;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.lang.Nullable;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,25 +23,26 @@ public class GameEntity {
     int blackPlayer;
     @Column("board")
     String board;
+    @Column("is_white_now")
+    boolean isWhiteNow;
+    @Column("created")
+    int created;
     @Transient
     Game game;
-
-    @MappedCollection(idColumn = "id")
-    Set<TurnEntity> turns = new HashSet<>();
-
     @Column("status")
-    String gameStatus;
+    GameStatus gameStatus;
 
-    public GameEntity(int whitePlayer, int blackPlayer, Board board) {
+
+    public GameEntity(int whitePlayer, int blackPlayer, Board board, GameStatus gameStatus) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         this.board = board.toString();
+        this.isWhiteNow = true;
         this.game = new Game(board);
-        this.gameStatus = "waitingForPlayers";
-    }
-    public void addTurn(TurnEntity turnEntity){
-        turns.add(turnEntity);
-    }
+        this.gameStatus = gameStatus;
+        this.created = 221015;
+}
+
 
     public int getId() {
         return id;
@@ -74,20 +76,20 @@ public class GameEntity {
         this.board = board;
     }
 
-    public String getGameStatus() {
+    public GameStatus getGameStatus() {
         return gameStatus;
     }
 
-    public void setGameStatus(String gameStatus) {
+    public void setGameStatus(GameStatus gameStatus) {
         this.gameStatus = gameStatus;
     }
 
-    public Set<TurnEntity> getTurns() {
-        return turns;
+    public int getCreated() {
+        return created;
     }
 
-    public void setTurns(Set<TurnEntity> turns) {
-        this.turns = turns;
+    public void setCreated(int created) {
+        this.created = created;
     }
 
     public Game getGame() {
@@ -96,6 +98,14 @@ public class GameEntity {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public boolean isWhiteNow() {
+        return isWhiteNow;
+    }
+
+    public void setWhiteNow(boolean whiteNow) {
+        isWhiteNow = whiteNow;
     }
 
     public GameEntity() {
@@ -109,9 +119,9 @@ public class GameEntity {
                 ", whitePlayer=" + whitePlayer +
                 ", blackPlayer=" + blackPlayer +
                 ", board='" + board + '\'' +
+                ", created=" + created +
                 ", game=" + game +
-                ", turns=" + turns +
-                ", gameStatus='" + gameStatus + '\'' +
+                ", gameStatus=" + gameStatus +
                 '}';
     }
 }

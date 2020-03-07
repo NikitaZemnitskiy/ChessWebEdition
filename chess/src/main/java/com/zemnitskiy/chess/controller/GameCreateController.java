@@ -1,7 +1,7 @@
 package com.zemnitskiy.chess.controller;
 
 
-import com.zemnitskiy.chess.GameType;
+
 import com.zemnitskiy.chess.entity.*;
 import com.zemnitskiy.chess.service.GameService;
 import com.zemnitskiy.chess.service.MyUserPrincipal;
@@ -19,13 +19,19 @@ public class GameCreateController {
 
     @GetMapping("/newSingleGame")
     public String newSingleGameCreator(@AuthenticationPrincipal MyUserPrincipal user){
-        User currentUser = user.getUser();
-        gameService.createGameEntity(user);
+        gameService.createGameEntity(user, user);
         return "SingleGame";
     }
+
+    @GetMapping("/newGame")
+    public String newGameCreator(@AuthenticationPrincipal MyUserPrincipal user){
+        gameService.createGameEntityForTwoPlayers(user);
+        return "NewGame";
+    }
+
     @GetMapping("/turnTest")
-    public void testTurn(@AuthenticationPrincipal MyUserPrincipal user){
-        User currentUser = user.getUser();
-        gameService.addTurn(user, 1, "e2e4");
+    public String testTurn(@AuthenticationPrincipal MyUserPrincipal user){
+        gameService.addTurn(user.getUser(), 3, "e7e5");
+        return "SingleGame";
     }
 }

@@ -61,4 +61,12 @@ public class Game extends Observable {
     public Board getBoard() {
         return board;
     }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "board=" + board +
+                ", isWhiteNow=" + isWhiteNow +
+                '}';
+    }
 }

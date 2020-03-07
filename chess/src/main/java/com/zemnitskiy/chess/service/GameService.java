@@ -1,27 +1,27 @@
 package com.zemnitskiy.chess.service;
 
+import com.zemnitskiy.chess.GameStatus;
 import com.zemnitskiy.chess.GameType;
 import com.zemnitskiy.chess.domain.Board;
 import com.zemnitskiy.chess.domain.Game;
-import com.zemnitskiy.chess.domain.Position;
 import com.zemnitskiy.chess.domain.Turn;
 import com.zemnitskiy.chess.domain.boardRep.StandartBoard;
-import com.zemnitskiy.chess.entity.GameEntity;
-import com.zemnitskiy.chess.entity.GameRepository;
-import com.zemnitskiy.chess.entity.TurnEntity;
-import com.zemnitskiy.chess.entity.TurnRepository;
+import com.zemnitskiy.chess.domain.exceptions.ChessException;
+import com.zemnitskiy.chess.domain.exceptions.NotYourTurnException;
+import com.zemnitskiy.chess.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.attribute.UserPrincipal;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Service
 public class GameService {
     Logger log = LoggerFactory.getLogger(GameService.class);
+
     @Autowired
     GameRepository gameRepository;
 
@@ -30,45 +30,69 @@ public class GameService {
 
     Set<GameEntity> activeGames = new HashSet<>();
 
-    public GameEntity createGameEntity(MyUserPrincipal whitePlayer,  MyUserPrincipal blackPlayer){
-        Board board = StandartBoard.getStandartBoard();
-        log.info("Create new Game white player - {}, black player - {}", whitePlayer, blackPlayer);
-        GameEntity gameEntity = new GameEntity (whitePlayer.getUser().getId(), blackPlayer.getUser().getId(), StandartBoard.getStandartBoard());
-        gameEntity.setGameStatus("waitingForPlayers");
-        gameEntity.setGame(new Game(board));
-        activeGames.add(gameEntity);
+    public GameEntity createGameEntity(MyUserPrincipal whitePlayer, MyUserPrincipal blackPlayer) {
+        Board standartBoard = StandartBoard.getStandartBoard();
+        GameEntity gameEntity = new GameEntity(whitePlayer.getUser().getId(), blackPlayer.getUser().getId(), standartBoard, GameStatus.GAME);
+        gameEntity.setGame(new Game(standartBoard));
         log.info("Game entity created - {}", gameEntity);
-        System.out.println(gameEntity.getGameStatus());
-        return gameRepository.save(gameEntity);
-    }
-    public GameEntity createGameEntity(MyUserPrincipal whitePlayer){
-       return createGameEntity(whitePlayer, whitePlayer);
+        gameEntity = gameRepository.save(gameEntity);
+        log.info("Game entity saved - {}", gameEntity);
+        activeGames.add(gameEntity);
+        return gameEntity;
     }
 
-    public void addTurn(MyUserPrincipal user, int gameId, String t){
-        Position lastPos = Position.fromString(t.substring(0,2));
-        Position newPos = Position.fromString(t.substring(2,4));
-        Turn turn = new Turn(lastPos, newPos);
+    public GameEntity createGameEntityForTwoPlayers(MyUserPrincipal whitePlayer) {
+        Board standartBoard = StandartBoard.getStandartBoard();
+        GameEntity gameEntity = new GameEntity(whitePlayer.getUser().getId(), null, standartBoard, GameStatus.WAITING);
+        gameEntity.setGame(new Game(standartBoard));
+        log.info("Game entity created - {}", gameEntity);
+        gameEntity = gameRepository.save(gameEntity);
+        log.info("Game entity saved - {}", gameEntity);
+        activeGames.add(gameEntity);
+        return gameEntity;
+    }
 
+    public void addTurn(User user, int gameId, String t) {
+        log.info("{} made {} in game with id - {} ", user, t, gameId);
+        Turn turn = Turn.getTurnFromString(t);
         GameEntity gameEntity = getGameEntityById(gameId);
-        if(gameEntity == null){
-            throw new IllegalStateException("Bad game id");
-        }
         Game game = gameEntity.getGame();
-        game.makeTurn(turn);
+
+        if(gameEntity.isWhiteNow() && user.getId() != gameEntity.getWhitePlayer()){
+            throw new NotYourTurnException("Now is not your turn");
+        }
+        if(!gameEntity.isWhiteNow() && user.getId() != gameEntity.getBlackPlayer()){
+            throw new NotYourTurnException("Now is not your turn");
+        }
+
+            game.makeTurn(turn);
         gameEntity.setBoard(game.getBoard().toString());
-        TurnEntity turnEntity = new TurnEntity(t,gameId);
-        turnRepository.save(turnEntity);
-        gameEntity.addTurn(turnEntity);
+        gameEntity.setWhiteNow(game.isWhiteNow);
+        TurnEntity turnEntity = new TurnEntity(t, gameId);
+        log.debug("Turn was save in  game entity{}", gameEntity);
         gameRepository.save(gameEntity);
+        turnRepository.save(turnEntity);
+
+      //  !                !                    !
+        if(!activeGames.contains(gameEntity)){
+            activeGames.add(gameEntity);
+        }
     }
 
-    public GameEntity getGameEntityById(int gameId){
-        for(GameEntity g: activeGames){
-            if(g.getId() == gameId){
+    public GameEntity getGameEntityById(int gameId) {
+        for (GameEntity g : activeGames) {
+            if (g.getId() == gameId) {
+                log.debug("Game was given from active games");
                 return g;
             }
         }
-            return gameRepository.findByGameId(gameId);
+        GameEntity gameEntity = gameRepository.findByGameId(gameId);
+        if (gameEntity == null) {
+            throw new IllegalStateException("Bad game id");
+        }
+            gameEntity.setGame(new Game(Board.getBoardFromString(gameEntity.getBoard())));
+            gameEntity.getGame().isWhiteNow = gameEntity.isWhiteNow();
+        log.debug("Game was given from rep");
+        return gameEntity;
     }
 }

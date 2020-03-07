@@ -21,6 +21,11 @@ public class Turn implements Iterable<Position> {
         this.dy = to.y -from.y;
   //      assert !(this.dx == 0 && this.dy == 0) : "Not a move";
     }
+    public static Turn getTurnFromString(String t){
+        Position lastPos = Position.fromString(t.substring(0, 2));
+        Position newPos = Position.fromString(t.substring(2, 4));
+        return new Turn(lastPos, newPos);
+    }
 
     public boolean isDiagonal() { return dx == dy || dx == -dy; }
 
