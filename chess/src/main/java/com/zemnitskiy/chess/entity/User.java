@@ -1,8 +1,13 @@
 package com.zemnitskiy.chess.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Table("users")
 public class User {
@@ -10,6 +15,8 @@ public class User {
     int id;
     String username;
     String password;
+    @MappedCollection(idColumn = "id")
+    Set<GameEntity> games = new HashSet<>();
 
     boolean enabled = true;
 
@@ -46,6 +53,14 @@ public class User {
         this.enabled = enabled;
     }
 
+    public Set<GameEntity> getGames() {
+        return games;
+    }
+
+    public void setGames(Set<GameEntity> games) {
+        this.games = games;
+    }
+
     public User() {
     }
 
@@ -63,7 +78,6 @@ public class User {
                 ", enabled=" + enabled +
                 '}';
     }
-
 
 }
 

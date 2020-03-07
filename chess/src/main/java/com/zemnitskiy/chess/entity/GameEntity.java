@@ -1,28 +1,45 @@
 package com.zemnitskiy.chess.entity;
 
+import com.zemnitskiy.chess.domain.Board;
 import com.zemnitskiy.chess.domain.Game;
-import com.zemnitskiy.chess.domain.Turn;
+import com.zemnitskiy.chess.domain.boardRep.StandartBoard;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-@Table("games")
+@Table("game")
 public class GameEntity {
     @Id
     int id;
+    @Column("white_player_id")
+    int whitePlayer;
+    @Column("black_player_id")
+    int blackPlayer;
+    @Column("board")
+    String board;
+    @Transient
     Game game;
-    User whitePlayer;
-    User blackPlayer;
-    List<Turn> turns = new ArrayList<>();
-    boolean isEnd;
 
-    public GameEntity(Game game, User whitePlayer, User blackPlayer) {
-        this.game = game;
+    @MappedCollection(idColumn = "id")
+    Set<TurnEntity> turns = new HashSet<>();
+
+    @Column("status")
+    String gameStatus;
+
+    public GameEntity(int whitePlayer, int blackPlayer, Board board) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
-        this.isEnd = false;
+        this.board = board.toString();
+        this.game = new Game(board);
+        this.gameStatus = "waitingForPlayers";
+    }
+    public void addTurn(TurnEntity turnEntity){
+        turns.add(turnEntity);
     }
 
     public int getId() {
@@ -33,6 +50,46 @@ public class GameEntity {
         this.id = id;
     }
 
+    public int getWhitePlayer() {
+        return whitePlayer;
+    }
+
+    public void setWhitePlayer(int whitePlayer) {
+        this.whitePlayer = whitePlayer;
+    }
+
+    public int getBlackPlayer() {
+        return blackPlayer;
+    }
+
+    public void setBlackPlayer(int blackPlayer) {
+        this.blackPlayer = blackPlayer;
+    }
+
+    public String getBoard() {
+        return board;
+    }
+
+    public void setBoard(String board) {
+        this.board = board;
+    }
+
+    public String getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(String gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    public Set<TurnEntity> getTurns() {
+        return turns;
+    }
+
+    public void setTurns(Set<TurnEntity> turns) {
+        this.turns = turns;
+    }
+
     public Game getGame() {
         return game;
     }
@@ -41,50 +98,20 @@ public class GameEntity {
         this.game = game;
     }
 
-    public User getWhitePlayer() {
-        return whitePlayer;
-    }
-
-    public void setWhitePlayer(User whitePlayer) {
-        this.whitePlayer = whitePlayer;
-    }
-
-    public User getBlackPlayer() {
-        return blackPlayer;
-    }
-
-    public void setBlackPlayer(User blackPlayer) {
-        this.blackPlayer = blackPlayer;
-    }
-
-    public boolean isEnd() {
-        return isEnd;
-    }
-
-    public void setEnd(boolean end) {
-        isEnd = end;
-    }
-
     public GameEntity() {
     }
 
-    public List<Turn> getTurns() {
-        return turns;
-    }
-
-    public void setTurns(List<Turn> turns) {
-        this.turns = turns;
-    }
 
     @Override
     public String toString() {
         return "GameEntity{" +
                 "id=" + id +
-                ", game=" + game +
                 ", whitePlayer=" + whitePlayer +
                 ", blackPlayer=" + blackPlayer +
+                ", board='" + board + '\'' +
+                ", game=" + game +
                 ", turns=" + turns +
-                ", isEnd=" + isEnd +
+                ", gameStatus='" + gameStatus + '\'' +
                 '}';
     }
 }

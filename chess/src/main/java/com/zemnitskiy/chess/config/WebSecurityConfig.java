@@ -1,6 +1,7 @@
 package com.zemnitskiy.chess.config;
 
 
+import com.zemnitskiy.chess.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,12 +22,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private DataSource dataSource;
 
     @Autowired
+    private MyUserDetailsService myUserService;
+
+   /* @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder())
               // .usersByUsernameQuery("select username, password, enabled from users where username = ?")
-                .authoritiesByUsernameQuery("select username, 'ROLE_USER' from users where username= ?");
+              .authoritiesByUsernameQuery("select username, 'ROLE_USER' from users where username= ?");
+    }*/
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(myUserService)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Bean
