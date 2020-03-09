@@ -8,6 +8,9 @@
 <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]! It's your personal cabinet</h1>
 <h1 th:inline="text">What do you want?</h1>
 <p><a href="http://localhost:8080/board.html">click here to play chess on one computer</a></p>
+<form th:action="@{/newGame}" method="post">
+    <div><input type="submit" value="Play"/></div>
+
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Sign Out"/>
 </form>

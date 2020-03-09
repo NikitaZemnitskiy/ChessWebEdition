@@ -6,21 +6,20 @@ import com.zemnitskiy.chess.domain.Game;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
-import org.springframework.lang.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Optional;
+
 
 @Table("game")
 public class GameEntity {
     @Id
     int id;
     @Column("white_player_id")
-    int whitePlayer;
+    Integer whitePlayer;
     @Column("black_player_id")
-    int blackPlayer;
+    Integer blackPlayer;
+
     @Column("board")
     String board;
     @Column("is_white_now")
@@ -32,8 +31,7 @@ public class GameEntity {
     @Column("status")
     GameStatus gameStatus;
 
-
-    public GameEntity(int whitePlayer, int blackPlayer, Board board, GameStatus gameStatus) {
+    public GameEntity(Integer whitePlayer, Integer blackPlayer, Board board, GameStatus gameStatus) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
         this.board = board.toString();
@@ -52,19 +50,20 @@ public class GameEntity {
         this.id = id;
     }
 
-    public int getWhitePlayer() {
+
+    public Integer getWhitePlayer() {
         return whitePlayer;
     }
 
-    public void setWhitePlayer(int whitePlayer) {
+    public void setWhitePlayer(Integer whitePlayer) {
         this.whitePlayer = whitePlayer;
     }
 
-    public int getBlackPlayer() {
+    public Integer getBlackPlayer() {
         return blackPlayer;
     }
 
-    public void setBlackPlayer(int blackPlayer) {
+    public void setBlackPlayer(Integer blackPlayer) {
         this.blackPlayer = blackPlayer;
     }
 
@@ -108,6 +107,8 @@ public class GameEntity {
         isWhiteNow = whiteNow;
     }
 
+    public boolean hasOnlyOnePlayer(){return whitePlayer == null || blackPlayer == null;}
+
     public GameEntity() {
     }
 
@@ -124,4 +125,5 @@ public class GameEntity {
                 ", gameStatus=" + gameStatus +
                 '}';
     }
+
 }

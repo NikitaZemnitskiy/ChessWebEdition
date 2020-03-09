@@ -2,7 +2,9 @@
  var divFigure = '<div id= "f$coord" class = "figure">$figure</div>';
  var map;
  var audio = new Audio();
- const evtSource = new EventSource("/stream-sse");
+ var path = location.pathname.split('/');
+ var gameId = path[path.length-1];
+ const evtSource = new EventSource("/stream-sse/"+gameId);
  $(function(){
     start();
                 evtSource.addEventListener("boardUpdate", function(event) {
@@ -13,7 +15,7 @@
 async function start() {
     map = new Array(64);
         addSquares();
-        let response = await fetch('/boardPosition')
+        let response = await fetch('/boardPosition/'+gameId)
         let responseText = await response.text();
         showFigures(responseText);
 
@@ -34,12 +36,9 @@ async function start() {
  async function moveFigure(frCord, toCord) {
 
     console.log('move from ' + parseCoord(frCord) + ' to ' + parseCoord(toCord));
-    let response = await fetch("/turn", {method: 'POST', body: parseCoord(frCord) + parseCoord(toCord)});
+    let response = await fetch("/turn/"+gameId , {method: 'POST', body: parseCoord(frCord) + parseCoord(toCord)});
 
     if (response.ok) {
-       /* figure = map[frCord];
-        showFigureAt(frCord, '1');
-        showFigureAt(toCord, figure);*/
         soundTurn("chessTurn.mp3");
 
     } else {

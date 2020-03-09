@@ -15,7 +15,7 @@ enabled boolean not null
 create table if not exists game (
 	id SERIAL NOT NULL primary key,
 	white_player_id integer not null REFERENCES users (id),
-	black_player_id integer not null REFERENCES users (id),
+	black_player_id integer REFERENCES users (id),
 	board varchar(100) not null,
 	is_white_now boolean not null,
 	created int,
