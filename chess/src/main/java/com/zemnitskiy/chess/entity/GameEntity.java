@@ -31,12 +31,12 @@ public class GameEntity {
     @Column("status")
     GameStatus gameStatus;
 
-    public GameEntity(Integer whitePlayer, Integer blackPlayer, Board board, GameStatus gameStatus) {
+    public GameEntity(Integer whitePlayer, Integer blackPlayer, Game game,  GameStatus gameStatus) {
         this.whitePlayer = whitePlayer;
         this.blackPlayer = blackPlayer;
-        this.board = board.toString();
+        this.board = game.getBoard().toString();
+        this.game = game;
         this.isWhiteNow = true;
-        this.game = new Game(board);
         this.gameStatus = gameStatus;
         this.created = 221015;
 }

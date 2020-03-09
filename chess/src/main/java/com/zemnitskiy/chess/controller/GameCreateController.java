@@ -1,6 +1,5 @@
 package com.zemnitskiy.chess.controller;
 
-import com.zemnitskiy.chess.GameStatus;
 import com.zemnitskiy.chess.entity.GameEntity;
 import com.zemnitskiy.chess.service.GameService;
 import com.zemnitskiy.chess.service.MyUserPrincipal;
@@ -20,7 +19,7 @@ public class GameCreateController {
 
     @GetMapping("/newSingleGame")
     public String newSingleGameCreator(@AuthenticationPrincipal MyUserPrincipal user){
-        gameService.createGameEntity(user, user);
+        gameService.createGameEntityToOneComputer(user, user);
         return "SingleGame";
     }
 

@@ -2,7 +2,7 @@ package com.zemnitskiy.chess;
 
 import com.zemnitskiy.chess.domain.Board;
 import com.zemnitskiy.chess.domain.Game;
-import com.zemnitskiy.chess.domain.boardRep.StandartBoard;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -25,7 +25,7 @@ public class ChessApplication {
 
 	@Bean
     Board board() {
-		return StandartBoard.getStandartBoard();
+		return Board.getStandartBoard();
 	}
 
 	@Bean

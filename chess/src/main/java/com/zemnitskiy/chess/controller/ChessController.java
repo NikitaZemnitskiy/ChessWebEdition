@@ -1,5 +1,6 @@
 package com.zemnitskiy.chess.controller;
 import com.zemnitskiy.chess.Application;
+import com.zemnitskiy.chess.domain.Board;
 import com.zemnitskiy.chess.domain.Game;
 import com.zemnitskiy.chess.service.GameService;
 import com.zemnitskiy.chess.service.MyUserPrincipal;
@@ -30,6 +31,7 @@ public class ChessController {
     @GetMapping("/boardPosition/{id}")
     public String boardString (@PathVariable("id") int gameId) {
         return gameService.getGameEntityById(gameId).getBoard();
+      
     }
 
 
