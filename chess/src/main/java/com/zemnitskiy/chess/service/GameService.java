@@ -60,7 +60,7 @@ public class GameService {
 
         availableGameEntity.remove(gameEntity);
         gameEntityByUserId.put(player.getUser().getId(), gameEntitySaved);
-        gameEntityByUserId.put(gameEntitySaved.getId(), gameEntitySaved);
+        gameEntityByGameId.put(gameEntitySaved.getId(), gameEntitySaved);
         log.debug("Game with one player has two player now And it's starting " +gameEntitySaved);
         return gameEntity;
     }
@@ -72,7 +72,7 @@ public class GameService {
         log.info("Game entity saved - {}", gameEntitySaved);
 
         gameEntityByUserId.put(player.getUser().getId(), gameEntitySaved);
-        gameEntityByUserId.put(gameEntitySaved.getId(), gameEntitySaved);
+        gameEntityByGameId.put(gameEntitySaved.getId(), gameEntitySaved);
         availableGameEntity.add(gameEntitySaved);
 
         return gameEntitySaved;
@@ -108,7 +108,6 @@ public class GameService {
 
     }
     public GameEntity getGameEntityById(int id){
-        System.out.println(gameEntityByGameId);
         return gameEntityByGameId.get(id);
     }
 }

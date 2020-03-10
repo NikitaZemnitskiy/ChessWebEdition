@@ -30,6 +30,7 @@ public class ChessController {
 
     @GetMapping("/boardPosition/{id}")
     public String boardString (@PathVariable("id") int gameId) {
+        System.out.println(gameService.getGameEntityById(gameId));
         return gameService.getGameEntityById(gameId).getBoard();
       
     }
