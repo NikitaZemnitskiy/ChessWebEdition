@@ -2,7 +2,7 @@ package com.zemnitskiy.chess;
 
 import com.zemnitskiy.chess.domain.Board;
 import com.zemnitskiy.chess.domain.Game;
-
+import com.zemnitskiy.chess.service.GameService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +18,8 @@ import javax.annotation.PostConstruct;
 public class ChessApplication {
 
 	@Autowired Application app;
+	@Autowired
+	GameService gameService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ChessApplication.class, args);
@@ -36,6 +38,8 @@ public class ChessApplication {
 	@PostConstruct
 	void start() {
 		app.startChess();
+		gameService.downloadGamesFromDataBase();
+		gameService.deleteAwaitGames();
 	}
 
 }

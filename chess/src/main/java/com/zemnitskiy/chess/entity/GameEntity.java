@@ -1,15 +1,11 @@
 package com.zemnitskiy.chess.entity;
 
 import com.zemnitskiy.chess.GameStatus;
-import com.zemnitskiy.chess.domain.Board;
 import com.zemnitskiy.chess.domain.Game;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
-import java.util.Optional;
-
 
 @Table("game")
 public class GameEntity {

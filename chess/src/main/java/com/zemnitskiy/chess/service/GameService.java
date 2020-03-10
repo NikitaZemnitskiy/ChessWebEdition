@@ -7,18 +7,15 @@ import com.zemnitskiy.chess.domain.Turn;
 import com.zemnitskiy.chess.domain.exceptions.GameNotAvailable;
 import com.zemnitskiy.chess.domain.exceptions.NotYourTurnException;
 import com.zemnitskiy.chess.entity.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class GameService {
@@ -109,5 +106,18 @@ public class GameService {
     }
     public GameEntity getGameEntityById(int id){
         return gameEntityByGameId.get(id);
+    }
+    public void downloadGamesFromDataBase(){
+        Set<GameEntity> games = gameRepository.getAllStartedGame();
+        for(GameEntity g:games){
+            Game game = new Game(Board.getBoardFromString(g.getBoard()));
+            game.isWhiteNow = g.isWhiteNow();
+            gameEntityByUserId.put(g.getBlackPlayer(), g);
+            gameEntityByUserId.put(g.getWhitePlayer(), g);
+            gameEntityByGameId.put(g.getId(), g);
+        }
+    }
+    public void deleteAwaitGames(){
+        log.debug(gameRepository.deleteAwaitGames()+" Awaiting games were delet");
     }
 }
