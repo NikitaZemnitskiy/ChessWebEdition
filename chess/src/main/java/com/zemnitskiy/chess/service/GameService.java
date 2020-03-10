@@ -112,6 +112,7 @@ public class GameService {
         for(GameEntity g:games){
             Game game = new Game(Board.getBoardFromString(g.getBoard()));
             game.isWhiteNow = g.isWhiteNow();
+            g.setGame(game);
             gameEntityByUserId.put(g.getBlackPlayer(), g);
             gameEntityByUserId.put(g.getWhitePlayer(), g);
             gameEntityByGameId.put(g.getId(), g);
