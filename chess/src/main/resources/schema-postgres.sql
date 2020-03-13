@@ -18,7 +18,7 @@ create table if not exists game (
 	black_player_id integer REFERENCES users (id),
 	board varchar(100) not null,
 	is_white_now boolean not null,
-	created int,
+	created TIMESTAMP,
 	status varchar(20) not null
 );
 

@@ -1,7 +1,9 @@
 package com.zemnitskiy.chess.controller;
 import com.zemnitskiy.chess.Application;
-import com.zemnitskiy.chess.domain.Board;
+import com.zemnitskiy.chess.GameStatus;
 import com.zemnitskiy.chess.domain.Game;
+import com.zemnitskiy.chess.entity.GameEntity;
+import com.zemnitskiy.chess.entity.UserRepository;
 import com.zemnitskiy.chess.service.GameService;
 import com.zemnitskiy.chess.service.MyUserPrincipal;
 import lombok.extern.slf4j.Slf4j;
@@ -25,15 +27,37 @@ public class ChessController {
     @Autowired
     GameService gameService;
 
+    @Autowired
+    UserRepository userRepository;
 
     AtomicLong eventCounter = new AtomicLong();
 
     @GetMapping("/boardPosition/{id}")
     public String boardString (@PathVariable("id") int gameId) {
-        System.out.println(gameService.getGameEntityById(gameId));
         return gameService.getGameEntityById(gameId).getBoard();
-      
     }
+
+    @GetMapping("/players/{id}")
+    public String getPlayers (@PathVariable("id") int gameId) {
+        Game.Player black = gameService.getGameEntityById(gameId).getGame().black;
+        Game.Player white = gameService.getGameEntityById(gameId).getGame().white;
+
+       StringBuilder str = new StringBuilder();
+       str.append(white.name);
+        System.out.println(black);
+       if(black != null){
+           str.append(" VS ");
+           str.append(black.name);
+       }
+       log.debug(str.toString());
+       return str.toString();
+    }
+
+    @GetMapping("/status/{id}")
+    public String getStatus (@PathVariable("id") int gameId) {
+        return gameService.getGameEntityById(gameId).getGameStatus().toString();
+    }
+
 
 
     @PostMapping("/turn/{id}")
@@ -42,19 +66,25 @@ public class ChessController {
         log.info("Turn - "+turn);
         return ResponseEntity.noContent().build();
    }
+    @PostMapping("/surrendered/{id}")
+    public void surrendered(@PathVariable("id") int gameId, @AuthenticationPrincipal MyUserPrincipal user){
+            gameService.addSurrendered(user, gameId);
+    }
+
     @GetMapping("/stream-sse/{id}")
     public SseEmitter streamEvents(@PathVariable("id") int gameId) {
-        Game game = gameService.getGameEntityById(gameId).getGame();
+        GameEntity gameEntity = gameService.getGameEntityById(gameId);
+        Game game = gameEntity.getGame();
         final SseEmitter emitter = new SseEmitter();
         final Observer observer = new Observer() {
             @Override
             public void update(Observable o, Object arg) {
-                String boardState = (String) arg;
-                log.debug("Event fired: " + boardState);
                 long eventId = eventCounter.incrementAndGet();
+                Game.Event event = (Game.Event) arg;
+                log.debug("Event fired: " + event);
 
                 try {
-                    emitter.send(SseEmitter.event().name("boardUpdate").data(game.getBoard().toString()).id(String.valueOf(eventId)));
+                        emitter.send(SseEmitter.event().name(event.eventType).data(event.data).id(String.valueOf(eventId)));
                 } catch (IOException e) {
                     log.warn("Cannot send event to client, unsubscribe observer");
                     game.deleteObserver(this);
@@ -65,6 +95,5 @@ public class ChessController {
         log.debug("Subscription created");
         return emitter;
     }
-
 
 }

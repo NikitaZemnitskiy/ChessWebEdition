@@ -7,8 +7,10 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
+
 @Table("game")
-public class GameEntity {
+public class GameEntity{
     @Id
     int id;
     @Column("white_player_id")
@@ -21,7 +23,7 @@ public class GameEntity {
     @Column("is_white_now")
     boolean isWhiteNow;
     @Column("created")
-    int created;
+    LocalDateTime created;
     @Transient
     Game game;
     @Column("status")
@@ -34,7 +36,7 @@ public class GameEntity {
         this.game = game;
         this.isWhiteNow = true;
         this.gameStatus = gameStatus;
-        this.created = 221015;
+        this.created = LocalDateTime.now();
 }
 
 
@@ -79,11 +81,11 @@ public class GameEntity {
         this.gameStatus = gameStatus;
     }
 
-    public int getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(int created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 

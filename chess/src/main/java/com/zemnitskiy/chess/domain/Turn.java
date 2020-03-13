@@ -83,6 +83,9 @@ public class Turn implements Iterable<Position> {
             return current;
         }
     }
+    public static String toE2E4Form(Turn turn){
+        return turn.from + turn.to.toString();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -105,4 +108,5 @@ public class Turn implements Iterable<Position> {
                 ", to=" + to +
                 '}';
     }
+
 }

@@ -4,21 +4,46 @@
  var audio = new Audio();
  var path = location.pathname.split('/');
  var gameId = path[path.length-1];
+ var turns = "";
  const evtSource = new EventSource("/stream-sse/"+gameId);
- $(function(){
+     $(function(){
     start();
-                evtSource.addEventListener("boardUpdate", function(event) {
-                    showFigures(event.data);
 
+                evtSource.addEventListener("boardUpdated", function(event) {
+                    showFigures(event.data);
      });
-        });
+
+         evtSource.addEventListener("turnUpdated", function(event) {
+             showTurns(event.data);
+         });
+
+     evtSource.addEventListener("statusUpdated", function(event) {
+         showStatus(event.data);
+     });
+
+     evtSource.addEventListener("playersUpdated", function(event) {
+         addPlayers(event.data);
+     });
+
+
+         window.onbeforeunload = function(e) {
+             var dialogText = 'If you make it you lose your game';
+             e.returnValue = dialogText;
+             e.dialogeText = dialogText;
+             return dialogText;
+         };
+         window.onunload = function() {
+            windowClose();
+         };
+
+         information();
+ });
 async function start() {
     map = new Array(64);
         addSquares();
-        let response = await fetch('/boardPosition/'+gameId)
+        let response = await fetch('/boardPosition/'+gameId);
         let responseText = await response.text();
         showFigures(responseText);
-
 }
  function setDraggable() {
         $('.figure').draggable();
@@ -39,13 +64,15 @@ async function start() {
     let response = await fetch("/turn/"+gameId , {method: 'POST', body: parseCoord(frCord) + parseCoord(toCord)});
 
     if (response.ok) {
-        soundTurn("chessTurn.mp3");
+        soundTurn("/chessTurn.mp3");
+        $('.message').html("                       ");
 
     } else {
-        console.log(await response.text());
+       // console.log(await response.text());
         figure = map[frCord];
         showFigureAt(frCord, figure);
-        soundTurn("WrongTurn.mp3");
+        soundTurn("/WrongTurn.mp3");
+        $('.message').html(await response.text());
     }
 
 
@@ -118,4 +145,28 @@ async function start() {
  function isBlackSquareAt(coord){
     return (coord % 8 + Math.floor(coord/8))%2;
  }
+ function showTurns(turn){
+    let figure = getChessSymbol(turn.charAt(0));
+    turn = turn.substr(1);
+    turns = turns+figure+turn+'  ';
+     $('.logs').html(turns);
+ }
+ async function information(){
+     let status = await fetch('/status/'+gameId);
+     showStatus(await status.text());
+
+     let players = await fetch('/players/'+gameId);
+     addPlayers(await players.text());
+ }
+ async function addPlayers(players) {
+     $('.players').html(players);
+ }
+
+ async function showStatus(status) {
+     $('.status').html(status);
+ }
+ async function windowClose() {
+     await fetch("/surrendered/"+gameId , {method: 'POST'});
+ }
+
 

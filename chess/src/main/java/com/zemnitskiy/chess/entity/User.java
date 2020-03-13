@@ -66,6 +66,7 @@ public class User {
         this.password = password;
         this.enabled = true;
     }
+
     @Override
     public String toString() {
         return "User{" +

@@ -4,13 +4,11 @@ package com.zemnitskiy.chess.domain;
 import com.zemnitskiy.chess.domain.figures.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Map;
 
 
 public class Board {
-    Logger log = LoggerFactory.getLogger(Board.class);
-
+    private final Logger log = LoggerFactory.getLogger(Board.class);
     public Figure[][] figures = new Figure[8][8];
 
     public Board() {
@@ -47,8 +45,8 @@ public class Board {
         log.debug("Trying to make turn from {} to {} ",t.from, t.to);
         Figure currentFigure = getFigure(t.from);
         currentFigure.isPossible(t, this);
-
     }
+
     public static Board getStandartBoard(){
         Board board = new Board();
         board.addFigureToBoard(Position.fromString("a1"), new Castle(Color.WHITE));
