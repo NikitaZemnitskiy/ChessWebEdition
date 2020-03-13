@@ -5,6 +5,7 @@
  var path = location.pathname.split('/');
  var gameId = path[path.length-1];
  var turns = "";
+ var turnCount = 0;
  const evtSource = new EventSource("/stream-sse/"+gameId);
      $(function(){
     start();
@@ -65,14 +66,14 @@ async function start() {
 
     if (response.ok) {
         soundTurn("/chessTurn.mp3");
-        $('.message').html("                       ");
+        $('.myErrorMessage').html("                       ");
 
     } else {
        // console.log(await response.text());
         figure = map[frCord];
         showFigureAt(frCord, figure);
         soundTurn("/WrongTurn.mp3");
-        $('.message').html(await response.text());
+        $('.myErrorMessage').html(await response.text());
     }
 
 
@@ -148,7 +149,9 @@ async function start() {
  function showTurns(turn){
     let figure = getChessSymbol(turn.charAt(0));
     turn = turn.substr(1);
-    turns = turns+figure+turn+'  ';
+    turnCount++;
+    turn =turnCount +") "+figure + turn;
+    turns = turns+turn+' ';
      $('.logs').html(turns);
  }
  async function information(){

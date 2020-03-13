@@ -1,39 +1,58 @@
+ .game-board {
+     margin: auto;
+ }
+
  .board{
-    width: 640px;
-    height: 640px;
-    border: 20px solid #55cdef;
-     display: inline-block;
+    width: 680px !important;
+    height: 680px !important;
+    border: 20px solid #55cdef !important;
+   /*  display: inline-block !important;*/
+
     }
     .square{
-    float: left;
-    width: 80px;
-    height: 80px;
-    display: inline-block;
-    vertical-align: top;
+    float: left !important;
+    width: 80px !important;
+    height: 80px !important;
+    display: inline-block !important;
+    vertical-align: top !important;
+        text-align: center !important;
+
     }
     .black{
-    background-color: #999;
+    background-color: #999 !important;
+
     }
     .white{
-    background-color: #eee;
+    background-color: #eee !important;
+
     }
     .figure{
-    font-size:60px;
-    cursor:pointer;
+    font-size:60px !important;
+    cursor:pointer !important;
+    color: black !important;
     }
     .players{
-        font-size:60px;
+        font-size:30px;
+
     }
     .status{
-     font-size:60px;
+     font-size:30px;
       }
- .message{
-     font-size:60px;
+ .myErrorMessage{
+     font-size:50px;
+     height: 30px !important;
+     color: #ff7174;
  }
  .logs{
     display: inline-block;
-     width: 320px;
-     height: 640px;
+     width: 550px;
+     height: 680px !important;
      vertical-align: top;
-     border:1px solid black
+     color: black;
+     border: 20px solid #55cdef;
+     font-size:30px;
+     background-color: lavenderblush;
  }
+.myButton{
+    padding: 25px;
+}

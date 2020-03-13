@@ -30,7 +30,7 @@ create table if not exists turn (
 	turn varchar(4) NOT NULL,
 	game_id integer not null REFERENCES game (id)
 );
-
+Insert into users (id,username,password,enabled) values (0,StockFish,$2a$10$1H1hFyXfXk7pduYdhcx8mO/lTU3i79trp8aldX0ARWb2etSMDXUwa, true);
  */
 --SELECT * FROM games AS c LEFT JOIN users AS u ON(c.white_player_id=u.id);
 

@@ -3,16 +3,46 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Personal cabinet</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
 </head>
 <body>
-<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]! It's your personal cabinet</h1>
-<h1 th:inline="text">What do you want?</h1>
+<section class="hero is-primary is-bold is-fullheight">
+    <div class="hero-head">
+        <div class="container">
+            <div class="columns is-centered">
 
-<form th:action="@{/newGame}" method="post">
-    <div><input type="submit" value="Play"/></div></form>
+                    <p><font size = "7"><h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1></font> </p>
 
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
-</form>
+            </div>
+            <div class="columns is-centered">
+                <p><font size = "7">It's your personal cabinet </font> </p>
+            </div>
+        </div>
+    </div>
+    <div class="hero-body">
+        <div class="container">
+            <div class="columns is-centered">
+                <form th:action="@{/newGame}" method="post">
+                    <button class="button is-warning is-large is-rounded myButton" >Play</button>
+                </form>
+            </div>
+    </div>
+
+        <div class="container">
+            <div class="columns is-centered">
+                <form th:action="@{/newSingleGame}" method="post">
+                    <button class="button is-warning is-large is-rounded myButton" >Single</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+        <form th:action="@{/logout}" method="post">
+            <button class="button is-danger is-large is-rounded">Log out</button>
+        </form>
+    </div>
+</section>
 </body>
 </html>

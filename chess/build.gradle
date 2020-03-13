@@ -1,0 +1,33 @@
+/* Stockfish Java's build.gradle */
+
+plugins {
+    id 'application'
+    id 'idea'
+    id 'java'
+}
+
+group 'Niflheim'
+version = new Version(major: 2, minor: 0, revision: 2, build: 2)
+mainClassName = 'com.zemnitskiy.chess.ChessApplication'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+def client_version = version.toString()
+def stockfish_version = "10"
+
+repositories {
+    jcenter()
+}
+
+class Version {
+    String major, minor, revision, build
+
+    String toString() {
+        "${major}.${minor}.${revision}_${build}"
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

@@ -26,4 +26,10 @@ public class GameCreateController {
         GameEntity gameEntity = gameService.connectToGameOrCreateNew(user);
         return "redirect:/board/" + gameEntity.getId();
     }
+
+    @PostMapping("/newSingleGame")
+    public String createNewSingleGame(@AuthenticationPrincipal MyUserPrincipal user){
+        GameEntity gameEntity = gameService.createNewGameEntityVsComputer(user);
+        return "redirect:/board/" + gameEntity.getId();
+    }
 }

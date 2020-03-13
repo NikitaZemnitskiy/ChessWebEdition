@@ -3,15 +3,73 @@
 	  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
 	<title>Registration</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+	<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 <body>
-<div th:if="${param.error}">
-	This user already exist.
-</div>
 
 <form th:action="@{/registration}" method="post">
-	<div><label> User Name : <input type="text" name="username"/> </label></div>
-	<div><label> Password: <input type="password" name="password"/> </label></div>
+	<section class="hero is-primary is-bold is-fullheight">
+		<div class="hero-body">
+			<div class="container">
+				<div class="columns is-centered">
+					<div class="column is-5-tablet is-4-desktop is-3-widescreen">
+						<div class="field">
+							<div th:if="${param.userAlreadyExist}">
+								<div class="notification is-danger">
+									<strong>User with this username already exist.</strong>
+								</div>
+							</div>
+
+							<div th:if="${param.passwordsAreDifferent}">
+								<div class="notification is-danger">
+									<strong>Passwords were different!</strong>
+								</div>
+							</div>
+
+							<label class="label">Username</label>
+							<div class="control has-icons-left has-icons-right">
+								<input class="input is-success" type="text" placeholder="Your name" name="username">
+								<span class="icon is-small is-left">
+      <i class="fas fa-user"></i>
+    </span>
+
+								</span>
+							</div>
+						</div>
+
+						<div class="field">
+							<label class="label">Password</label>
+							<p class="control has-icons-left">
+								<label>
+									<input class="input" type="password" placeholder="Password" name="password">
+								</label>
+								<span class="icon is-small is-left">
+      <i class="fas fa-lock"></i>
+    </span>
+							</p>
+						</div>
+
+
+						<div class="field">
+							<label class="label">Confirm your password</label>
+							<p class="control has-icons-left">
+								<label>
+									<input class="input" type="password" placeholder="Password" name="confirmedPassword">
+								</label>
+								<span class="icon is-small is-left">
+      <i class="fas fa-lock"></i>
+    </span>
+							</p>
+						</div>
+
+
+						<button class="button is-link is-rounded" input type="submit">Add new User</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 	<div><input type="submit" value="Add user"/></div>
 </form>
 </body>

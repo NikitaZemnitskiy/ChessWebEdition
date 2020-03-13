@@ -105,5 +105,38 @@ public class Board {
         return stringBuilder.reverse().toString();
     }
 
+    public String toFEN(Game game){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i<8; i++){
+            int space = 0;
+            for(int j = 7; j>=0; j--){
+                if(figures[j][i] != null){
+                    if(space != 0){
+                        stringBuilder.append(space);
+                        space = 0;
+                    }
+                    stringBuilder.append(figures[j][i]);
+                }
+                else {
+                    space++;
+                }
+            }
+            if(space != 0){
+                stringBuilder.append(space);
+            }
+            stringBuilder.append("/");
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length() -1);
+        stringBuilder = stringBuilder.reverse();
+        if(game.isWhiteNow){
+            stringBuilder.append(" "+"w");
+        }
+        else {
+            stringBuilder.append(" "+"b");
+        }
+        stringBuilder.append(" KQkq - 0 1");
+        return stringBuilder.toString();
+    }
+
 
 }

@@ -1,22 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
+
     <link rel="shortcut icon" type="image/ico" href="/faviconN.ico"/>
     <meta charset="UTF-8">
     <title>Game</title>
     <link rel="stylesheet" type="text/css" href="/chess.css"/>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src = "/chess.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+    <script src="/chess.js"></script>
+
 </head>
 <body>
-<center>
-<div class="players"></div>
-    <div class="status"></div>
-    <div class="board"/></div>
-    <div class="logs"></div>
-    <div class="message"></div>
-</center>
+<section class="hero is-primary is-bold is-fullheight">
+    <div class="hero-head">
+
+        <div class="columns is-mobile is-centered">
+            <p class="bd-notification is-info">
+            <div class="players"></div>
+            </p>
+        </div>
+        <div class="columns is-mobile is-centered">
+            <p class="bd-notification is-info">
+            <div class="status"></div>
+            </p>
+        </div>
+        <div class="columns is-mobile is-centered">
+            <p class="bd-notification is-info">
+            <div class="myErrorMessage"></div>
+            </p>
+        </div>
+    </div>
+
+    <div class="game-board hero-body">
+
+        <div class="columns is-gapless">
+            <div class="column">
+                <div class="board"></div>
+            </div>
+            <div class="column">
+                <div class="logs"></div>
+            </div>
+        </div>
+    </div>
+
+   <!-- <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+        <form th:action="@{/surrendered}" method="post">
+            <button class="button is-warning is-rounded myButton" >Surrendered</button>
+        </form>
+    </div>-->
+
+    <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+
+        <a href = "http://localhost:8080" button class="button is-danger is-rounded myButton">Exit</a>
+    </div>
+
+</section>
+
 
 </body>
 </html>
