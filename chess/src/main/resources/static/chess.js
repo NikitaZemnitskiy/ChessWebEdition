@@ -34,6 +34,7 @@
              return dialogText;
          };
          window.onunload = function() {
+             console.log("Leave!")
             windowClose();
          };
 
@@ -56,13 +57,15 @@ async function start() {
            var frCord = ui.draggable.attr('id').substring(1);
            var toCord = this.id.substring(1);
            moveFigure(frCord, toCord);
+           console.log("move from " + frCord + " to " + toCord)
        }
      })
  }
  async function moveFigure(frCord, toCord) {
-
-    console.log('move from ' + parseCoord(frCord) + ' to ' + parseCoord(toCord));
-    let response = await fetch("/turn/"+gameId , {method: 'POST', body: parseCoord(frCord) + parseCoord(toCord)});
+    parseFrCoord = parseCoord(frCord);
+    parseToCoord = parseCoord(toCord);
+    console.log('move from ' + parseFrCoord + ' to ' + parseToCoord);
+    let response = await fetch("/turn/"+gameId , {method: 'POST', body: parseFrCoord + parseToCoord});
 
     if (response.ok) {
         soundTurn("/chessTurn.mp3");
@@ -128,7 +131,7 @@ async function start() {
      let vert = Math.trunc(9-coord/8);
      let hor = coord % 8 + 1;
      switch (hor){
-         case 1:return "a"+vert;
+         case 1:return "a"+(vert-1);
          case 2:return "b"+vert;
          case 3:return "c"+vert;
          case 4:return "d"+vert;
@@ -150,7 +153,7 @@ async function start() {
     let figure = getChessSymbol(turn.charAt(0));
     turn = turn.substr(1);
     turnCount++;
-    turn =turnCount +") "+figure + turn;
+    turn =turnCount +")"+figure + turn;
     turns = turns+turn+' ';
      $('.logs').html(turns);
  }

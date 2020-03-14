@@ -40,6 +40,12 @@ public class RegistrationController {
         if(!password.equals(confirmedPassword)){
             return "redirect:/registration?passwordsAreDifferent";
         }
+        if(password.length() < 3){
+            return "redirect:/registration?shortPassword";
+        }
+        if(username.length() < 3){
+            return "redirect:/registration?shortUsername";
+        }
         if (userRepository.findByUsername(username) != null){
             return "redirect:/registration?userAlreadyExist";
         }

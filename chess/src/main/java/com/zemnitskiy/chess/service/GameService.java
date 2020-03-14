@@ -20,6 +20,7 @@ import xyz.niflheim.stockfish.engine.enums.Variant;
 import xyz.niflheim.stockfish.exceptions.StockfishInitException;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameService {
     Logger log = LoggerFactory.getLogger(GameService.class);
 
+    StockfishClient stockfishClient;
     @Autowired
     GameRepository gameRepository;
 
@@ -36,6 +38,19 @@ public class GameService {
 
     @Autowired
     TurnRepository turnRepository;
+
+    public GameService() {
+        try {
+            this.stockfishClient = new StockfishClient.Builder()
+                    .setInstances(4)
+                    .setVariant(Variant.DEFAULT)
+                    .build();
+        } catch (StockfishInitException e) {
+            stockfishClient = null;
+            e.printStackTrace();
+        }
+    }
+
     User stockFish = new User("StockFish", "1");
     Map<Integer, GameEntity> gameEntityByGameId = new ConcurrentHashMap<>();
     Map<Integer, GameEntity> gameEntityByUserId = new ConcurrentHashMap<>();
@@ -85,7 +100,7 @@ public class GameService {
     public GameEntity createNewGameEntityVsComputer(MyUserPrincipal player){
         Game game = new Game(Board.getStandartBoard());
         game.white = new Game.Player(player.getUsername());
-        game.black = new Game.Player("StockFish");
+        game.black = new Game.Player(stockFish.getUsername());
         game.status = GameStatus.GAME;
         GameEntity gameEntity = new GameEntity(player.getUser().getId(), 0, game, GameStatus.GAME);
         GameEntity gameEntitySaved = gameRepository.save(gameEntity);
@@ -142,35 +157,44 @@ public class GameService {
         gameEntityByGameId.put(gameId, gameEntity);
 
         if(gameEntity.getBlackPlayer() == 0 && !game.isWhiteNow){
-            addTurn(stockFish, gameId, getTurnFromStockFish(game) );
+            String stockFishsTurn = getTurnFromStockFish(game);
+            if(stockFishsTurn != null) {
+                addTurn(stockFish, gameId, getTurnFromStockFish(game));
+            }
+            else {
+                Turn turn1 = game.getBoard().tryToEatWhiteKing();
+                if(turn1 != null) {
+                    addTurn(stockFish, gameId, game.getBoard().tryToEatWhiteKing().toPositionString());
+                }
+                else {
+                    addSurrendered(new MyUserPrincipal(stockFish), gameId);
+                }
+            }
         }
     }
     private String getTurnFromStockFish(Game game){
-        StockfishClient client = null;
-        System.out.println(game.getBoard().toFEN(game));
-        try {
-            client = new StockfishClient.Builder()
-                    .setInstances(4)
-                    .setVariant(Variant.DEFAULT)
-                    .build();
-        } catch (StockfishInitException e) {
 
-            log.debug("StockFishException");
-            e.printStackTrace();
-        }
-        Query query = new Query.Builder(QueryType.Legal_Moves)
+        Query query = new Query.Builder(QueryType.Best_Move)
                 .setFen(game.getBoard().toFEN(game))
                 .build();
-        client.submit(query, result -> {
-            System.out.println(query);
-        });
-        System.out.println(query);
-        return query.getMove();
+        HashSet<String> turns = new HashSet<>();
+        stockfishClient.submit(query, turns::add);
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(turns.isEmpty()){
+            game.addSurrendered(game.white.name);
+            return null;
+        }
+        System.out.println(turns.iterator().next());
+        return turns.iterator().next().substring(0,4);
     }
     public void addSurrendered(MyUserPrincipal player, int gameId){
 
         log.debug(player.getUsername() + " surrendered in the game with id - "+gameId);
-       GameEntity gameEntity = gameEntityByGameId.get(gameId);
+        GameEntity gameEntity = gameEntityByGameId.get(gameId);
        if(gameEntity.getGameStatus() != GameStatus.GAME){
            return;
        }

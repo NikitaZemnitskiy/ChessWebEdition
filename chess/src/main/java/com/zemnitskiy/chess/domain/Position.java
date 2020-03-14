@@ -27,7 +27,7 @@ public class Position {
         return new Position(x,y);
     }
 
-    Position (int x, int y){
+    public Position (int x, int y){
         validate(x);
         validate(y);
         this.x = x;

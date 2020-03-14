@@ -27,6 +27,18 @@
 								</div>
 							</div>
 
+							<div th:if="${param.shortPassword}">
+								<div class="notification is-danger">
+									<strong>Passwords must be 3 or more character!</strong>
+								</div>
+							</div>
+
+							<div th:if="${param.shortUsername}">
+								<div class="notification is-danger">
+									<strong>Username must be 3 or more character!</strong>
+								</div>
+							</div>
+
 							<label class="label">Username</label>
 							<div class="control has-icons-left has-icons-right">
 								<input class="input is-success" type="text" placeholder="Your name" name="username">

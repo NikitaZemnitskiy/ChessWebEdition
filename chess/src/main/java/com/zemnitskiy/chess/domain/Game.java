@@ -69,7 +69,6 @@ public class Game extends Observable {
 
     public void makeTurn(Turn turn){
 
-            checkTurn(turn);
             board.makeTurn(turn);
             board.figures[turn.to.x][turn.to.y] = board.figures[turn.from.x][turn.from.y];
             board.figures[turn.from.x][turn.from.y] = null;
@@ -92,27 +91,6 @@ public class Game extends Observable {
             setStatus(GameStatus.WHITE_WIN);
         }
     }
-
-    private void checkTurn(Turn turn){
-        Figure startFigure = board.getFigure(turn.from);
-        Figure distFigure = board.getFigure(turn.to);
-
-        if (startFigure == null){
-            log.debug("Turn is impossible.{} don't have a figure", turn.from);
-            throw new WrongTurnException("Turn is impossible.Position 1 don't have a figure");
-        }
-
-        if( turn.from == turn.to){
-            log.debug("Turn is impossible. Position 1 and position 2 are the same positions");
-            throw new WrongTurnException("Turn is impossible. Position 1 and position 2 are the same positions");
-        }
-
-        if( !(distFigure == null || startFigure.getColor() != distFigure.getColor())){
-            log.debug("Turn is impossible. Position 1 and position 2 have the same color figures");
-            throw new WrongTurnException("Turn is impossible. Position 1 and position 2 have the same color figures");
-        }
-    }
-
 
     public Board getBoard() {
         return board;

@@ -68,6 +68,7 @@ public class ChessController {
    }
     @PostMapping("/surrendered/{id}")
     public void surrendered(@PathVariable("id") int gameId, @AuthenticationPrincipal MyUserPrincipal user){
+        System.out.println("SURRENDED ! " + user + gameId);
             gameService.addSurrendered(user, gameId);
     }
 

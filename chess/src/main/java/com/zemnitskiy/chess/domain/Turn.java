@@ -108,5 +108,8 @@ public class Turn implements Iterable<Position> {
                 ", to=" + to +
                 '}';
     }
+    public String toPositionString(){
+        return from+to.toString();
+    }
 
 }

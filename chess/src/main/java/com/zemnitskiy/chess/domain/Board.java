@@ -1,6 +1,8 @@
 package com.zemnitskiy.chess.domain;
 
 
+import com.zemnitskiy.chess.domain.exceptions.ChessException;
+import com.zemnitskiy.chess.domain.exceptions.WrongTurnException;
 import com.zemnitskiy.chess.domain.figures.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +16,14 @@ public class Board {
     public Board() {
 
     }
-    public static Board getBoardFromString(String str){
+
+    public static Board getBoardFromString(String str) {
         Map<Character, Figure> boardMap = Figure.boardMap;
         Figure[][] figures = new Figure[8][8];
         int count = 0;
-        for(int i = 7; i>=0; i--){
-            for(int j = 0;j<8; j++){
-                if(boardMap.containsKey(str.charAt(count))){
+        for (int i = 7; i >= 0; i--) {
+            for (int j = 0; j < 8; j++) {
+                if (boardMap.containsKey(str.charAt(count))) {
                     figures[j][i] = boardMap.get(str.charAt(count));
                 }
                 count++;
@@ -28,26 +31,51 @@ public class Board {
         }
         return new Board(figures);
     }
+
     public Board(Figure[][] figures) {
         this.figures = figures;
     }
+
     public Figure getFigure(Position p) {
         return figures[p.x][p.y];
     }
-    public void addFigureToBoard(Position p, Figure figure){
+
+    public void addFigureToBoard(Position p, Figure figure) {
         this.figures[p.x][p.y] = figure;
     }
+
     boolean hasFigure(Position p) {
-        return  getFigure(p) != null;
+        return getFigure(p) != null;
     }
 
-    public void makeTurn(Turn t){
-        log.debug("Trying to make turn from {} to {} ",t.from, t.to);
+    public void makeTurn(Turn t) {
+        log.debug("Trying to make turn from {} to {} ", t.from, t.to);
+        checkTurn(t);
         Figure currentFigure = getFigure(t.from);
         currentFigure.isPossible(t, this);
     }
 
-    public static Board getStandartBoard(){
+    private void checkTurn(Turn turn){
+        Figure startFigure = this.getFigure(turn.from);
+        Figure distFigure = this.getFigure(turn.to);
+
+        if (startFigure == null){
+            log.debug("Turn is impossible.{} don't have a figure", turn.from);
+            throw new WrongTurnException("Turn is impossible.Position 1 don't have a figure");
+        }
+
+        if( turn.from == turn.to){
+            log.debug("Turn is impossible. Position 1 and position 2 are the same positions");
+            throw new WrongTurnException("Turn is impossible. Position 1 and position 2 are the same positions");
+        }
+
+        if( !(distFigure == null || startFigure.getColor() != distFigure.getColor())){
+            log.debug("Turn is impossible. Position 1 and position 2 have the same color figures");
+            throw new WrongTurnException("Turn is impossible. Position 1 and position 2 have the same color figures");
+        }
+    }
+
+    public static Board getStandartBoard() {
         Board board = new Board();
         board.addFigureToBoard(Position.fromString("a1"), new Castle(Color.WHITE));
         board.addFigureToBoard(Position.fromString("b1"), new Knight(Color.WHITE));
@@ -89,15 +117,14 @@ public class Board {
     }
 
 
-@Override
-    public String toString(){
+    @Override
+    public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i<8; i++){
-            for(int j = 7; j>=0; j--){
-                if(figures[j][i] != null){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 7; j >= 0; j--) {
+                if (figures[j][i] != null) {
                     stringBuilder.append(figures[j][i]);
-                }
-                else {
+                } else {
                     stringBuilder.append(1);
                 }
             }
@@ -105,38 +132,66 @@ public class Board {
         return stringBuilder.reverse().toString();
     }
 
-    public String toFEN(Game game){
+    public String toFEN(Game game) {
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i<8; i++){
+        for (int i = 0; i < 8; i++) {
             int space = 0;
-            for(int j = 7; j>=0; j--){
-                if(figures[j][i] != null){
-                    if(space != 0){
+            for (int j = 7; j >= 0; j--) {
+                if (figures[j][i] != null) {
+                    if (space != 0) {
                         stringBuilder.append(space);
                         space = 0;
                     }
                     stringBuilder.append(figures[j][i]);
-                }
-                else {
+                } else {
                     space++;
                 }
             }
-            if(space != 0){
+            if (space != 0) {
                 stringBuilder.append(space);
             }
             stringBuilder.append("/");
         }
-        stringBuilder.deleteCharAt(stringBuilder.length() -1);
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         stringBuilder = stringBuilder.reverse();
-        if(game.isWhiteNow){
-            stringBuilder.append(" "+"w");
-        }
-        else {
-            stringBuilder.append(" "+"b");
+        if (game.isWhiteNow) {
+            stringBuilder.append(" " + "w");
+        } else {
+            stringBuilder.append(" " + "b");
         }
         stringBuilder.append(" KQkq - 0 1");
         return stringBuilder.toString();
     }
 
+    public Turn tryToEatWhiteKing() {
+        Position whiteKing = null;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 7; j >= 0; j--) {
+                if (figures[j][i] != null && figures[j][i].toString().equals("K")) {
+                    whiteKing = new Position(j, i);
+                    break;
+                }
+            }
+            if (whiteKing != null) {
+                break;
+            }
+        }
 
+        for (int i = 0; i < 8; i++) {
+            for (int j = 7; j >= 0; j--) {
+                if (figures[j][i] != null) {
+                    try {
+                        Turn turn = new Turn(new Position(j, i), whiteKing);
+                        checkTurn(turn);
+                        figures[j][i].isPossible(turn, this);
+                        return turn;
+                    }
+                    catch (ChessException e) {
+
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }

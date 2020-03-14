@@ -21,23 +21,30 @@
             </div>
         </div>
     </div>
-    <div class="hero-body">
-        <div class="container">
-            <div class="columns is-centered">
-                <form th:action="@{/newGame}" method="post">
-                    <button class="button is-warning is-large is-rounded myButton" >Play</button>
-                </form>
-            </div>
-    </div>
 
-        <div class="container">
-            <div class="columns is-centered">
-                <form th:action="@{/newSingleGame}" method="post">
-                    <button class="button is-warning is-large is-rounded myButton" >Single</button>
-                </form>
+
+        <div class="columns is-mobile is-centered">
+            <div class="column is-half">
+                <p class="bd-notification is-primary">
+                        <form th:action="@{/newGame}" method="post">
+                           <center><button class="button is-warning is-large is-rounded myButton" > Play </button></center>
+            </form>
+                </p>
             </div>
         </div>
-    </div>
+
+        <div class="columns is-mobile is-centered">
+            <div class="column is-half">
+                <p class="bd-notification is-primary">
+                <form th:action="@{/newSingleGame}" method="post">
+                <center><button class="button is-warning is-large is-rounded myButton" >Single</button></center>
+                </form>
+                </p>
+            </div>
+        </div>
+
+
+
     <div class="column is-5-tablet is-4-desktop is-3-widescreen">
         <form th:action="@{/logout}" method="post">
             <button class="button is-danger is-large is-rounded">Log out</button>
@@ -46,3 +53,11 @@
 </section>
 </body>
 </html>
+
+<form th:action="@{/newGame}" method="post">
+    <button class="button is-warning is-large is-rounded myButton" >Play</button>
+</form>
+
+<form th:action="@{/newSingleGame}" method="post">
+    <button class="button is-warning is-large is-rounded myButton" >Single</button>
+</form>
