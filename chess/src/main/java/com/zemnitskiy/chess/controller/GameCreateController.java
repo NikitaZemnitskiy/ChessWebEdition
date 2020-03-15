@@ -16,11 +16,6 @@ public class GameCreateController {
     @Autowired
     GameService gameService;
 
-    @GetMapping("/board/{boardId}")
-    public String registration(@PathVariable("boardId") int boardId){
-        return "forward:/board.html";
-    }
-
     @PostMapping("/newGame")
     public String connectToGameOrCreateNew(@AuthenticationPrincipal MyUserPrincipal user){
         GameEntity gameEntity = gameService.connectToGameOrCreateNew(user);

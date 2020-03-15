@@ -6,6 +6,8 @@ import com.zemnitskiy.chess.domain.exceptions.WrongTurnException;
 import com.zemnitskiy.chess.domain.figures.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.lang.Nullable;
+
 import java.util.Map;
 
 
@@ -55,21 +57,21 @@ public class Board {
         currentFigure.isPossible(t, this);
     }
 
-    private void checkTurn(Turn turn){
+    private void checkTurn(Turn turn) {
         Figure startFigure = this.getFigure(turn.from);
         Figure distFigure = this.getFigure(turn.to);
 
-        if (startFigure == null){
+        if (startFigure == null) {
             log.debug("Turn is impossible.{} don't have a figure", turn.from);
             throw new WrongTurnException("Turn is impossible.Position 1 don't have a figure");
         }
 
-        if( turn.from == turn.to){
+        if (turn.from == turn.to) {
             log.debug("Turn is impossible. Position 1 and position 2 are the same positions");
             throw new WrongTurnException("Turn is impossible. Position 1 and position 2 are the same positions");
         }
 
-        if( !(distFigure == null || startFigure.getColor() != distFigure.getColor())){
+        if (!(distFigure == null || startFigure.getColor() != distFigure.getColor())) {
             log.debug("Turn is impossible. Position 1 and position 2 have the same color figures");
             throw new WrongTurnException("Turn is impossible. Position 1 and position 2 have the same color figures");
         }
@@ -152,8 +154,8 @@ public class Board {
             }
             stringBuilder.append("/");
         }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         stringBuilder = stringBuilder.reverse();
+        stringBuilder.deleteCharAt(0);
         if (game.isWhiteNow) {
             stringBuilder.append(" " + "w");
         } else {
@@ -185,9 +187,7 @@ public class Board {
                         checkTurn(turn);
                         figures[j][i].isPossible(turn, this);
                         return turn;
-                    }
-                    catch (ChessException e) {
-
+                    } catch (ChessException ignored) {
                     }
                 }
             }

@@ -13,7 +13,6 @@ public class MyUserPrincipal implements UserDetails {
     private User user;
 
     public MyUserPrincipal(User user) {
-        log.debug("inMyUserPrincipal constructor " + user);
         this.user = user;
     }
 

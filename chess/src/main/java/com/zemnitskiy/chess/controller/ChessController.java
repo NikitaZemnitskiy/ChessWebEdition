@@ -1,6 +1,5 @@
 package com.zemnitskiy.chess.controller;
 import com.zemnitskiy.chess.Application;
-import com.zemnitskiy.chess.GameStatus;
 import com.zemnitskiy.chess.domain.Game;
 import com.zemnitskiy.chess.entity.GameEntity;
 import com.zemnitskiy.chess.entity.UserRepository;
@@ -56,6 +55,11 @@ public class ChessController {
     @GetMapping("/status/{id}")
     public String getStatus (@PathVariable("id") int gameId) {
         return gameService.getGameEntityById(gameId).getGameStatus().toString();
+    }
+
+    @GetMapping("/color/{id}")
+    public String getColor (@PathVariable("id") int gameId, @AuthenticationPrincipal MyUserPrincipal user) {
+        return gameService.getGameEntityById(gameId).getBlackPlayer() == user.getUser().getId()?"black":"white";
     }
 
 

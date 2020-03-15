@@ -42,7 +42,7 @@ public class GameService {
     public GameService() {
         try {
             this.stockfishClient = new StockfishClient.Builder()
-                    .setInstances(4)
+                    .setInstances(1)
                     .setVariant(Variant.DEFAULT)
                     .build();
         } catch (StockfishInitException e) {
@@ -115,10 +115,19 @@ public class GameService {
         log.info("{} made {} in game with id - {} ", user, t, gameId);
         GameEntity gameEntity = gameEntityByGameId.get(gameId);
         Game game = gameEntity.getGame();
+        GameStatus status = gameEntity.getGameStatus();
+        Color playerColor;
 
-        if(gameEntity.getGameStatus() != GameStatus.GAME){
+        if (gameEntity.getWhitePlayer().equals(user.getId()))
+            playerColor = Color.WHITE;
+        else if (gameEntity.getBlackPlayer().equals(user.getId()))
+            playerColor = Color.BLACK;
+        else
+            throw new GameNotAvailable("You are only spectator, you can't make turn");
+
+        if(status != GameStatus.GAME){
             log.debug("Trying to access a game with the wrong status " + gameEntity);
-            if(gameEntity.getGameStatus() == GameStatus.WAITING){
+            if(status == GameStatus.WAITING){
                 throw new GameNotAvailable("This game has not started yet");
             }
             else {
@@ -126,23 +135,32 @@ public class GameService {
             }
         }
 
-
-        if(gameEntity.isWhiteNow() && !gameEntity.getWhitePlayer().equals(user.getId())){
+        if(gameEntity.isWhiteNow() ^ playerColor == Color.WHITE){
             throw new WrongTurnException("Now is not your turn");
         }
 
-        if(!gameEntity.isWhiteNow() && !gameEntity.getBlackPlayer().equals(user.getId())){
+       /* if(gameEntity.isWhiteNow() && playerColor == Color.BLACK){
             throw new WrongTurnException("Now is not your turn");
         }
 
+        if(!gameEntity.isWhiteNow() && playerColor == Color.WHITE){
+            throw new WrongTurnException("Now is not your turn");
+        }
+*/
 
             Turn turn = Turn.getTurnFromString(t);
-            if(gameEntity.getWhitePlayer().equals(user.getId()) && game.getBoard().figures[turn.from.x][turn.from.y].color != Color.WHITE){
+            Color figureColor = game.getBoard().figures[turn.from.x][turn.from.y].color;
+
+        if(playerColor == Color.WHITE ^ figureColor == Color.WHITE){
+            throw new WrongTurnException("It's not your figure");
+        }
+
+          /*  if(playerColor == Color.WHITE && figureColor != Color.WHITE){
                 throw new WrongTurnException("It's not your figure");
             }
-            if(gameEntity.getBlackPlayer() != null && gameEntity.getBlackPlayer().equals(user.getId()) && game.getBoard().figures[turn.from.x][turn.from.y].color != Color.BLACK){
+            if(playerColor == Color.BLACK && figureColor != Color.BLACK){
                 throw new WrongTurnException("It's not your figure");
-            }
+            }*/
             game.makeTurn(turn);
 
         gameEntity.setBoard(game.getBoard().toString());
@@ -162,9 +180,9 @@ public class GameService {
                 addTurn(stockFish, gameId, getTurnFromStockFish(game));
             }
             else {
-                Turn turn1 = game.getBoard().tryToEatWhiteKing();
-                if(turn1 != null) {
-                    addTurn(stockFish, gameId, game.getBoard().tryToEatWhiteKing().toPositionString());
+                Turn finishTurn = game.getBoard().tryToEatWhiteKing();
+                if(finishTurn != null) {
+                    addTurn(stockFish, gameId, finishTurn.toPositionString());
                 }
                 else {
                     addSurrendered(new MyUserPrincipal(stockFish), gameId);

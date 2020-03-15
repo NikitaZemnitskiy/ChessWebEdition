@@ -31,7 +31,7 @@
              var dialogText = 'If you make it you lose your game';
              e.returnValue = dialogText;
              e.dialogeText = dialogText;
-             return dialogText;
+            // return dialogText;
          };
          window.onunload = function() {
              console.log("Leave!")
@@ -42,7 +42,9 @@
  });
 async function start() {
     map = new Array(64);
-        addSquares();
+    let playerColor = await fetch('/color/'+gameId);
+    await playerColor.text() === "black"?addBSquares():addWSquares();
+
         let response = await fetch('/boardPosition/'+gameId);
         let responseText = await response.text();
         showFigures(responseText);
@@ -57,7 +59,7 @@ async function start() {
            var frCord = ui.draggable.attr('id').substring(1);
            var toCord = this.id.substring(1);
            moveFigure(frCord, toCord);
-           console.log("move from " + frCord + " to " + toCord)
+
        }
      })
  }
@@ -82,8 +84,7 @@ async function start() {
 
  }
 
- function addSquares(){
- console.log('addSquares');
+ function addWSquares(){
          $('.board').html('');
          for(var coord = 0; coord <64; coord++)
          $('.board').append(divSquare
@@ -92,6 +93,17 @@ async function start() {
          isBlackSquareAt(coord)? 'black' : 'white'));
          setDroppable();
  }
+
+ function addBSquares(){
+     $('.board').html('');
+     for(var coord = 63; coord >=0; coord--)
+         $('.board').append(divSquare
+             .replace('$coord', coord)
+             .replace('$color',
+                 isBlackSquareAt(coord)? 'black' : 'white'));
+     setDroppable();
+ }
+
 
  function showFigures(figures) {
      for(var coord = 0; coord <64; coord++)
@@ -130,7 +142,11 @@ async function start() {
  function parseCoord(coord){
      let vert = Math.trunc(9-coord/8);
      let hor = coord % 8 + 1;
-     switch (hor){
+     console.log("hor" + hor)
+     console.log("vert" + vert)
+     let result = String.fromCharCode(('a'.charCodeAt(0) + hor)-1);
+     return result === "a"? result+''+(vert-1):result+''+vert;
+    /* switch (hor){
          case 1:return "a"+(vert-1);
          case 2:return "b"+vert;
          case 3:return "c"+vert;
@@ -140,7 +156,7 @@ async function start() {
          case 7:return "g"+vert;
          case 8:return "h"+vert;
          default:return "WrongSquare";
-     }
+     }*/
  }
  function soundTurn(audioName) {
      audio.src = audioName;

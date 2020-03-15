@@ -10,7 +10,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TurnTest {
-    Logger log = LoggerFactory.getLogger(getClass());
 
     @Test
     void isDiagonal() {

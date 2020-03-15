@@ -31,7 +31,7 @@ class BoardTest {
         board.addFigureToBoard(Position.fromString("e4"), new King(Color.WHITE));
         board.addFigureToBoard(Position.fromString("b1"), new Queen(Color.WHITE));
         Turn expectedTurn = new Turn(Position.fromString("b1"), Position.fromString("e4"));
-        assertEquals(board.tryToEatWhiteKing(), expectedTurn);
+        assertEquals(board.tryToEatWhiteKing(), null);
     }
     @Test
     void checkWhiteKingEat3(){

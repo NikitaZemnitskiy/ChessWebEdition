@@ -15,6 +15,6 @@ public class ChessExceptionHandler
 
     @ExceptionHandler(ChessException.class)
     public ResponseEntity<Object> handleAccessDeniedException(Exception ex) {
-        return new ResponseEntity<Object>(ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 }

@@ -47,9 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .authorizeRequests()
-              //  .mvcMatchers("/registration", "/", "/home").permitAll()
                 .mvcMatchers("/registration").permitAll()
                 .anyRequest().authenticated()
                 .and()
