@@ -24,15 +24,6 @@ public abstract class Figure {
     );
 
 
-   /* static final Map<Character, Figure> boardMap = Map.of(
-            'b', new Bishop(Color.BLACK), 'B', new Bishop(Color.WHITE),
-            'r', new Castle(Color.BLACK), 'R', new Castle(Color.WHITE),
-            'k', new King(Color.BLACK), 'K', new King(Color.WHITE),
-            'n', new Knight(Color.BLACK), 'N', new Knight(Color.WHITE),
-            'p', new Pawn(Color.BLACK), 'P', new Pawn(Color.WHITE));
-    */
-
-
     public final Color color;
 
     public Figure(Color color) {

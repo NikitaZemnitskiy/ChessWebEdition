@@ -12,8 +12,11 @@ import com.zemnitskiy.chess.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import xyz.niflheim.stockfish.StockfishClient;
+import xyz.niflheim.stockfish.engine.enums.Option;
 import xyz.niflheim.stockfish.engine.enums.Query;
 import xyz.niflheim.stockfish.engine.enums.QueryType;
 import xyz.niflheim.stockfish.engine.enums.Variant;
@@ -26,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
+
 public class GameService {
     Logger log = LoggerFactory.getLogger(GameService.class);
 
@@ -39,11 +43,15 @@ public class GameService {
     @Autowired
     TurnRepository turnRepository;
 
-    public GameService() {
+    public GameService(@Value("${stockFish.skillLevel}") int stockFishSkillLevel){
         try {
+            System.out.println(stockFishSkillLevel);
             this.stockfishClient = new StockfishClient.Builder()
-                    .setInstances(1)
-                    .setVariant(Variant.DEFAULT)
+                    .setInstances(4)
+                    .setOption(Option.Threads, 1) // Number of threads that Stockfish will use
+                    .setOption(Option.Minimum_Thinking_Time, 100) // Minimum thinking time Stockfish will take
+                    .setOption(Option.Skill_Level, stockFishSkillLevel) // Stockfish skill level 0-20
+                    .setVariant(Variant.DEFAULT) // Stockfish Variant
                     .build();
         } catch (StockfishInitException e) {
             stockfishClient = null;
@@ -83,8 +91,8 @@ public class GameService {
     }
 
     private GameEntity createNewGameEntity(MyUserPrincipal player){
-        Game game = new Game(Board.getStandartBoard());
-        game.startGame(new Game.Player(player.getUsername()));
+        Game game = new Game(Board.getStandardBoard());
+        game.createGame(new Game.Player(player.getUsername()));
         game.status = GameStatus.WAITING;
         GameEntity gameEntity = new GameEntity(player.getUser().getId(), null, game, GameStatus.WAITING);
         GameEntity gameEntitySaved = gameRepository.save(gameEntity);
@@ -98,7 +106,7 @@ public class GameService {
     }
 
     public GameEntity createNewGameEntityVsComputer(MyUserPrincipal player){
-        Game game = new Game(Board.getStandartBoard());
+        Game game = new Game(Board.getStandardBoard());
         game.white = new Game.Player(player.getUsername());
         game.black = new Game.Player(stockFish.getUsername());
         game.status = GameStatus.GAME;
@@ -139,15 +147,6 @@ public class GameService {
             throw new WrongTurnException("Now is not your turn");
         }
 
-       /* if(gameEntity.isWhiteNow() && playerColor == Color.BLACK){
-            throw new WrongTurnException("Now is not your turn");
-        }
-
-        if(!gameEntity.isWhiteNow() && playerColor == Color.WHITE){
-            throw new WrongTurnException("Now is not your turn");
-        }
-*/
-
             Turn turn = Turn.getTurnFromString(t);
             Color figureColor = game.getBoard().figures[turn.from.x][turn.from.y].color;
 
@@ -155,12 +154,6 @@ public class GameService {
             throw new WrongTurnException("It's not your figure");
         }
 
-          /*  if(playerColor == Color.WHITE && figureColor != Color.WHITE){
-                throw new WrongTurnException("It's not your figure");
-            }
-            if(playerColor == Color.BLACK && figureColor != Color.BLACK){
-                throw new WrongTurnException("It's not your figure");
-            }*/
             game.makeTurn(turn);
 
         gameEntity.setBoard(game.getBoard().toString());
@@ -198,7 +191,7 @@ public class GameService {
         HashSet<String> turns = new HashSet<>();
         stockfishClient.submit(query, turns::add);
         try {
-            Thread.sleep(200);
+            Thread.sleep(250);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -224,11 +217,29 @@ public class GameService {
     }
 
     public GameEntity getGameEntityById(int id){
-        return gameEntityByGameId.get(id);
+        if(gameEntityByGameId.containsKey(id)) {
+            return gameEntityByGameId.get(id);
+        }
+        return getGameEntityFromDb(id);
     }
 
+    @Nullable
+    private GameEntity getGameEntityFromDb(int gameId){
+        GameEntity gameEntity = gameRepository.findByGameId(gameId);
+        if(gameEntity == null){
+            return null;
+        }
+        Game game = new Game(Board.getBoardFromString(gameEntity.getBoard()));
+        game.status = gameEntity.getGameStatus();
+        game.white = new Game.Player(userRepository.findByUserID(gameEntity.getWhitePlayer()).getUsername());
+        game.black = new Game.Player(userRepository.findByUserID(gameEntity.getBlackPlayer()).getUsername());
+        game.isWhiteNow = gameEntity.isWhiteNow();
+        gameEntity.setGame(game);
+        return gameEntity;
+    }
     public void downloadGamesFromDataBase(){
         Set<GameEntity> games = gameRepository.getAllStartedGame();
+
         for(GameEntity g:games){
             Game game = new Game(Board.getBoardFromString(g.getBoard()));
             game.status = g.getGameStatus();

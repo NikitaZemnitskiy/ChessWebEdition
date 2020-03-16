@@ -7,6 +7,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Iterator;
 import java.util.Objects;
 
+/*
+This class construct from 2 Positions and contains all position between them
+
+*/
+
 public class Turn implements Iterable<Position> {
     Logger log = LoggerFactory.getLogger(Turn.class);
     public final Position from;
@@ -41,6 +46,7 @@ public class Turn implements Iterable<Position> {
         return !(isDiagonal() || isVertical() || isHorizontal());
     }
 
+    //return first figure on the Path of this turn. Take bord
    public Figure firstOnPath(Board b) {
         for (Position p : this) {
             Figure figure = b.getFigure(p);

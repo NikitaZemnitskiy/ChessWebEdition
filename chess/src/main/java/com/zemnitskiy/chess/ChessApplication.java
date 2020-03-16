@@ -5,6 +5,7 @@ import com.zemnitskiy.chess.domain.Game;
 import com.zemnitskiy.chess.service.GameService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,6 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class ChessApplication {
 
-	@Autowired Application app;
 	@Autowired
 	GameService gameService;
 
@@ -27,7 +27,7 @@ public class ChessApplication {
 
 	@Bean
     Board board() {
-		return Board.getStandartBoard();
+		return Board.getStandardBoard();
 	}
 
 	@Bean
@@ -37,7 +37,6 @@ public class ChessApplication {
 
 	@PostConstruct
 	void start() {
-		app.startChess();
 		gameService.downloadGamesFromDataBase();
 		gameService.deleteAwaitGames();
 	}

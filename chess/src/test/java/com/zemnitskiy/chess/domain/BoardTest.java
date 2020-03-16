@@ -35,7 +35,7 @@ class BoardTest {
     }
     @Test
     void checkWhiteKingEat3(){
-        Board board = Board.getStandartBoard();
+        Board board = Board.getStandardBoard();
         Turn expectedTurn = null;
         assertEquals(board.tryToEatWhiteKing(), expectedTurn);
     }

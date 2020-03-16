@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 @Service
 public class MyUserDetailsService implements UserDetailsService {
-    private Logger log = LoggerFactory.getLogger(UserDetailsService.class);
     @Autowired
     private UserRepository userRepository;
 

@@ -1,5 +1,4 @@
 package com.zemnitskiy.chess.controller;
-import com.zemnitskiy.chess.Application;
 import com.zemnitskiy.chess.domain.Game;
 import com.zemnitskiy.chess.entity.GameEntity;
 import com.zemnitskiy.chess.entity.UserRepository;
@@ -21,8 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class ChessController {
 
 
-    @Autowired
-    Application application;
+
     @Autowired
     GameService gameService;
 
@@ -38,17 +36,16 @@ public class ChessController {
 
     @GetMapping("/players/{id}")
     public String getPlayers (@PathVariable("id") int gameId) {
-        Game.Player black = gameService.getGameEntityById(gameId).getGame().black;
-        Game.Player white = gameService.getGameEntityById(gameId).getGame().white;
+        Game game = gameService.getGameEntityById(gameId).getGame();
+        Game.Player black = game.black;
+        Game.Player white = game.white;
 
        StringBuilder str = new StringBuilder();
        str.append(white.name);
-        System.out.println(black);
        if(black != null){
            str.append(" VS ");
            str.append(black.name);
        }
-       log.debug(str.toString());
        return str.toString();
     }
 
@@ -59,7 +56,7 @@ public class ChessController {
 
     @GetMapping("/color/{id}")
     public String getColor (@PathVariable("id") int gameId, @AuthenticationPrincipal MyUserPrincipal user) {
-        return gameService.getGameEntityById(gameId).getBlackPlayer() == user.getUser().getId()?"black":"white";
+        return gameService.getGameEntityById(gameId).getWhitePlayer() == user.getUser().getId()?"white":"black";
     }
 
 
@@ -70,6 +67,7 @@ public class ChessController {
         log.info("Turn - "+turn);
         return ResponseEntity.noContent().build();
    }
+
     @PostMapping("/surrendered/{id}")
     public void surrendered(@PathVariable("id") int gameId, @AuthenticationPrincipal MyUserPrincipal user){
         System.out.println("SURRENDED ! " + user + gameId);

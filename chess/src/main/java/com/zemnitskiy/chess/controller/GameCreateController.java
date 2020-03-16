@@ -27,4 +27,10 @@ public class GameCreateController {
         GameEntity gameEntity = gameService.createNewGameEntityVsComputer(user);
         return "redirect:/board/" + gameEntity.getId();
     }
+
+    @GetMapping("/board/{boardId}")
+    public String board(@PathVariable("boardId") int boardId){
+        return "forward:/board.html";
+    }
+
 }

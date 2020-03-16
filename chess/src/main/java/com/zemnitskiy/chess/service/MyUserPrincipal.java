@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 
 public class MyUserPrincipal implements UserDetails {
-    private Logger log = LoggerFactory.getLogger(MyUserPrincipal.class);
     private User user;
 
     public MyUserPrincipal(User user) {

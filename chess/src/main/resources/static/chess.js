@@ -6,6 +6,7 @@
  var gameId = path[path.length-1];
  var turns = "";
  var turnCount = 0;
+
  const evtSource = new EventSource("/stream-sse/"+gameId);
      $(function(){
     start();
@@ -31,11 +32,11 @@
              var dialogText = 'If you make it you lose your game';
              e.returnValue = dialogText;
              e.dialogeText = dialogText;
-            // return dialogText;
+             return dialogText;
          };
          window.onunload = function() {
-             console.log("Leave!")
-            windowClose();
+             console.log("Leave!");
+             windowClose();
          };
 
          information();
@@ -59,7 +60,6 @@ async function start() {
            var frCord = ui.draggable.attr('id').substring(1);
            var toCord = this.id.substring(1);
            moveFigure(frCord, toCord);
-
        }
      })
  }
@@ -67,14 +67,33 @@ async function start() {
     parseFrCoord = parseCoord(frCord);
     parseToCoord = parseCoord(toCord);
     console.log('move from ' + parseFrCoord + ' to ' + parseToCoord);
-    let response = await fetch("/turn/"+gameId , {method: 'POST', body: parseFrCoord + parseToCoord});
 
+    /* var request = new XMLHttpRequest();
+     request.open('POST','/turn/'+gameId,true);
+
+    request.addEventListener('readystatechange', function() {
+
+         if (response.ok) {
+             soundTurn("/chessTurn.mp3");
+             $('.myErrorMessage').html(" ");
+
+         } else {
+             figure = map[frCord];
+             showFigureAt(frCord, figure);
+             soundTurn("/WrongTurn.mp3");
+             $('.myErrorMessage').html(response.text());
+         }
+     });
+     request.send(csrfParameter + "=" + csrfToken + "&name=John&...");
+
+     request.send();*/
+
+    let response = await fetch("/turn/"+gameId , {method: 'POST', body: parseFrCoord + parseToCoord});
     if (response.ok) {
         soundTurn("/chessTurn.mp3");
-        $('.myErrorMessage').html("                       ");
+        $('.myErrorMessage').html(" ");
 
     } else {
-       // console.log(await response.text());
         figure = map[frCord];
         showFigureAt(frCord, figure);
         soundTurn("/WrongTurn.mp3");
@@ -132,7 +151,7 @@ async function start() {
      'n': '&#9822',
      'p': '&#9823',
      '1':''
- }
+ };
 
 
  function getChessSymbol(figure){
@@ -142,21 +161,8 @@ async function start() {
  function parseCoord(coord){
      let vert = Math.trunc(9-coord/8);
      let hor = coord % 8 + 1;
-     console.log("hor" + hor)
-     console.log("vert" + vert)
      let result = String.fromCharCode(('a'.charCodeAt(0) + hor)-1);
      return result === "a"? result+''+(vert-1):result+''+vert;
-    /* switch (hor){
-         case 1:return "a"+(vert-1);
-         case 2:return "b"+vert;
-         case 3:return "c"+vert;
-         case 4:return "d"+vert;
-         case 5:return "e"+vert;
-         case 6:return "f"+vert;
-         case 7:return "g"+vert;
-         case 8:return "h"+vert;
-         default:return "WrongSquare";
-     }*/
  }
  function soundTurn(audioName) {
      audio.src = audioName;

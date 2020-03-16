@@ -11,8 +11,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 
+
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
+import java.util.regex.Pattern;
 
 @Configuration
 @EnableWebSecurity(debug = false)
@@ -24,14 +30,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyUserDetailsService myUserService;
 
-   /* @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .passwordEncoder(passwordEncoder())
-              // .usersByUsernameQuery("select username, password, enabled from users where username = ?")
-              .authoritiesByUsernameQuery("select username, 'ROLE_USER' from users where username= ?");
-    }*/
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -46,7 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+     //   http.csrf().ignoringAntMatchers("/board");
+        http.csrf().disable()
                 .authorizeRequests()
                 .mvcMatchers("/registration").permitAll()
                 .anyRequest().authenticated()
@@ -58,5 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .permitAll();
     }
+
 
 }

@@ -6,16 +6,23 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
+/*
+This class contains some position on the bord. It can be 2 number in range 0..7(x and y)
+coordinates or it can be character in range a..h and number in range 1..8(like a chess
+bord coordinates)
+*/
 
 public class Position {
     Logger log = LoggerFactory.getLogger(Position.class);
     public final int x, y;
 
-  // We must put here coordinates in range 0..7
+    //This method takes coordinates in range 0..7
+
     public static Position fromCoordinates(int x, int y) {
         return new Position(x,y);
     }
 
+    // This method takes coordinates in format "e2" and transform them in Position(x,y)
     public static Position fromString(String coordinatesAsString) {
         if (coordinatesAsString.length() < 2){
             throw new ImpossiblePositionException(coordinatesAsString + " not a move");
@@ -32,9 +39,8 @@ public class Position {
         validate(y);
         this.x = x;
         this.y = y;
-        log.debug("Position created x - {}, y - {}", x, y);
     }
-
+//throw exception if this position is impossible
     void validate(int pos){
         if(pos < 0 || pos >= 8)
         throw new ImpossiblePositionException("Position " + pos + " must me in range 0..7");
@@ -44,6 +50,7 @@ public class Position {
         return new Turn(this, p);
     }
 
+    //This method takes delta of x and y coordinates and return New position (current position + this delta)
     public Position moveBy(int dx, int dy) {
         return new Position(this.x + dx, this.y + dy);
     }
