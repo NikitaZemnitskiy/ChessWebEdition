@@ -1,6 +1,8 @@
 
-<img align="right" src="E:\JavaProject\ChessNewGen\ChessWebEdition\chess\src\main\resources\pic\login.jpg">
 #Online Chess Web Application
+
+<a href="https://ibb.co/kcR6KF0"><img src="https://i.ibb.co/DKxg4nk/chess-Bord.jpg" alt="chess-Bord" border="0"></a>
+
 
 By default, application port is 8080
 and connect to postgres data base with name - "chess_db".

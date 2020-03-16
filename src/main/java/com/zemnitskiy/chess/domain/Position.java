@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
-/*
+/**
 This class contains some position on the bord. It can be 2 number in range 0..7(x and y)
 coordinates or it can be character in range a..h and number in range 1..8(like a chess
 bord coordinates)
