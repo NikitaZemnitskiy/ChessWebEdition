@@ -7,10 +7,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Iterator;
 import java.util.Objects;
 
-/*
-This class construct from 2 Positions and contains all position between them
-
-*/
+/**
+ *
+ * This class construct from 2 Positions and contains all position between them
+ *
+ */
 
 public class Turn implements Iterable<Position> {
     Logger log = LoggerFactory.getLogger(Turn.class);
@@ -26,9 +27,17 @@ public class Turn implements Iterable<Position> {
         this.dy = to.y -from.y;
   //      assert !(this.dx == 0 && this.dy == 0) : "Not a move";
     }
-    public static Turn getTurnFromString(String t){
-        Position lastPos = Position.fromString(t.substring(0, 2));
-        Position newPos = Position.fromString(t.substring(2, 4));
+
+    /**
+     *
+     * @param turn(String view)
+     *
+     * @return new Turn
+     *
+     */
+    public static Turn getTurnFromString(String turn){
+        Position lastPos = Position.fromString(turn.substring(0, 2));
+        Position newPos = Position.fromString(turn.substring(2, 4));
         return new Turn(lastPos, newPos);
     }
 
@@ -46,10 +55,17 @@ public class Turn implements Iterable<Position> {
         return !(isDiagonal() || isVertical() || isHorizontal());
     }
 
-    //return first figure on the Path of this turn. Take bord
-   public Figure firstOnPath(Board b) {
+
+
+    /**
+     *
+     * @param board
+     * @return first figure on the Path of this turn. Take bord
+     *
+     */
+   public Figure firstOnPath(Board board) {
         for (Position p : this) {
-            Figure figure = b.getFigure(p);
+            Figure figure = board.getFigure(p);
             if (figure != null) return figure;
         }
         return null;

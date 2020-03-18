@@ -9,10 +9,11 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.util.Observable;
 
-/*
+/**
+ *
 This class contains main states of Game and Perform basic motion checks.
 It can make turn, validate turn, add players, add surrender, and send events;
-*/
+ **/
 public class Game extends Observable {
     Logger log = LoggerFactory.getLogger(Game.class);
     final Board board;
@@ -24,7 +25,13 @@ public class Game extends Observable {
         this.board = board;
         this.status = null;
     }
-//Take one Player and create game;
+
+    /**
+     *
+     * @param white Player
+     * Take one Player and create game;
+     *
+     */
     public void createGame(Player white) {
         log.debug("Player "+white +" create game" );
         this.white = white;
@@ -33,7 +40,13 @@ public class Game extends Observable {
         setChanged();
         setPlayers();
     }
-//Take one Player and join him to created game
+
+    /**
+     *
+     * @param black Player
+     * Take one Player and join him to created game
+     *
+     */
     public void joinGame(Player black) {
         log.debug("Player "+black +" join to Player "+white );
         this.black = black;
@@ -43,7 +56,11 @@ public class Game extends Observable {
         setPlayers();
     }
 
-    //Take name of Player and add him to surrendered
+    /**
+     *
+     * Take name of Player and add him to surrendered
+     *
+     */
     public void addSurrendered(String name) {
        if(name.equals(white.name)){
            setChanged();
@@ -58,19 +75,35 @@ public class Game extends Observable {
        }
     }
 
-//Set status of this game. Take status
+    /**
+     *
+     * @param status
+     * Set status of this game. Take status
+     */
     private void setStatus(GameStatus status) {
         setChanged();
         this.status = status;
         notifyObservers(new Event("statusUpdated", this.status.name()));
     }
-    //Set players of this game
+
+    /**
+     *
+     * Set players of this game
+     *
+     */
     private void setPlayers(){
         if(black == null)
         notifyObservers(new Event("playersUpdated", white.name));
         else notifyObservers(new Event("playersUpdated", white.name + " VS " + black.name));
     }
-//Try to make a turn in this game. Take turn
+
+    /**
+     *
+     * @param turn
+     * Try to make a turn in this game.
+     * @throws com.zemnitskiy.chess.domain.exceptions.WrongTurnException if turn is invalid
+     *
+     */
     public void makeTurn(Turn turn){
 
             board.makeTurn(turn);

@@ -9,11 +9,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-/*
+/**
+ *
 This class contains figures array and it can transform this array in some special view.
 This class can check turn and Try to return turn, that bit white king also you can get
 standard chess bord from this class;
- */
+ *
+ **/
 public class Board {
     private final Logger log = LoggerFactory.getLogger(Board.class);
     public Figure[][] figures = new Figure[8][8];
@@ -21,7 +23,14 @@ public class Board {
     public Board() {
 
     }
-//Transform string to the figures array and return new bord with this figures
+
+    /**
+     *
+     * @param str
+     * Transform string to the figures array
+     * @return new board with this figures
+     *
+     */
     public static Board getBoardFromString(String str) {
         Map<Character, Figure> boardMap = Figure.boardMap;
         Figure[][] figures = new Figure[8][8];
@@ -49,10 +58,12 @@ public class Board {
         this.figures[p.x][p.y] = figure;
     }
 
-    boolean hasFigure(Position p) {
-        return getFigure(p) != null;
-    }
-//Try to make a received turn, throw WrongTurnException if this turn is impossible
+    /**
+     *
+     * Try to make a received turn,
+     * @throw WrongTurnException if this turn is impossible
+     *
+     */
     public void makeTurn(Turn t) {
         log.debug("Trying to make turn from {} to {} ", t.from, t.to);
         checkTurn(t);
@@ -79,7 +90,11 @@ public class Board {
             throw new WrongTurnException("Turn is impossible. Position 1 and position 2 have the same color figures");
         }
     }
-//Return new Board with standard chess position
+/**
+ *
+ * @return new Board with standard chess position
+ *
+ */
     public static Board getStandardBoard() {
         Board board = new Board();
         board.addFigureToBoard(Position.fromString("a1"), new Castle(Color.WHITE));
@@ -136,8 +151,12 @@ public class Board {
         }
         return stringBuilder.reverse().toString();
     }
-// Receive some game and transform it to the FEN standard string
-// https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+
+    /**
+     * @param game and transform it to the FEN standard string
+     *  https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+     *
+     */
     public String toFEN(Game game) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < 8; i++) {
@@ -169,8 +188,11 @@ public class Board {
         return stringBuilder.toString();
     }
 
-/*Try to found a turn, which can bit a white king
-    In case there is no such moveBy return null*/
+/**
+ * Try to found a turn, which can bit a white king
+ * In case there is no such moveBy return null
+ *
+ **/
 
     public Turn tryToEatWhiteKing() {
         Position whiteKing = null;
